@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #111111;
+  --color-background-alt: #1a1a1a;
+  --color-foreground: #eeeeee;
+  
+  --color-card: #1a1a1a;
+  --color-card-foreground: #eeeeee;
+  
+  --color-popover: #1a1a1a;
+  --color-popover-foreground: #eeeeee;
+  
+  --color-primary: #eeeeee;
+  --color-primary-foreground: #111111;
+  
+  --color-secondary: #333333;
+  --color-secondary-foreground: #eeeeee;
+  
+  --color-muted: #333333;
+  --color-muted-foreground: #aaaaaa;
+  
+  --color-accent: #333333;
+  --color-accent-foreground: #eeeeee;
+  
+  --color-destructive: #cc0000;
+  --color-destructive-foreground: #eeeeee;
+  
+  --color-success: #16a34a;
+  --color-success-alt: #4ade80;
+  
+  --color-border: #333333;
+  --color-input: #333333;
+  --color-ring: #aaaaaa;
+  --radius: 0rem;
+}
+
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    border-color: var(--color-border, currentColor);
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    min-height: 100vh;
+  }
+
+  button {
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+  }
+
+  input,
+  textarea,
+  select {
+    font-family: 'Courier New', Courier, monospace;
+    outline: none;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #111;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #555;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
