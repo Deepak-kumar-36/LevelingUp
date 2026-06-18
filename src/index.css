@@ -47,6 +47,10 @@
     font-family: 'Courier New', Courier, monospace;
     font-size: 13px;
     min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   button {
@@ -59,6 +63,8 @@
   select {
     font-family: 'Courier New', Courier, monospace;
     outline: none;
+    -webkit-user-select: auto;
+    user-select: auto;
   }
 
   textarea {

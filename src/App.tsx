@@ -102,9 +102,9 @@ export default function App() {
   const moreNavs = navs.slice(4);
 
   return (
-    <div className="min-h-screen pb-16 md:pb-0">
+    <div className="min-h-screen pb-[max(env(safe-area-inset-bottom),1rem)] md:pb-0">
       {/* Top Bar */}
-      <div className="sticky top-0 z-50 flex items-center justify-between p-2 md:p-3 bg-background border-b border-border flex-wrap gap-2">
+      <div className="sticky top-0 z-50 flex items-center justify-between p-2 md:p-3 pt-[max(env(safe-area-inset-top),0.5rem)] md:pt-3 bg-background border-b border-border flex-wrap gap-2">
         <div className="font-bold text-[13px] tracking-[3px]">
           &gt;_ LEVELING UP
         </div>
@@ -129,14 +129,14 @@ export default function App() {
               <button
                 key={n.id}
                 onClick={() => { setView(n.id); setShowMenu(false); }}
-                className={`px-2 py-1 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
+                className={`px-2 py-2 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
               >
                 {n.label}
               </button>
             ))}
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className={`px-2 py-1 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${showMenu || moreNavs.some(n => n.id === view) ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
+              className={`px-2 py-2 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${showMenu || moreNavs.some(n => n.id === view) ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
             >
               MORE ▼
             </button>

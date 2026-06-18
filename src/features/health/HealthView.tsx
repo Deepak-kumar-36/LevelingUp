@@ -30,6 +30,7 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
   const [fName, setFName] = useState('');
   const [fCal, setFCal] = useState('');
   const [fPro, setFPro] = useState('');
+  const [showDiet, setShowDiet] = useState(false);
 
   const TK = dKey(new Date());
   const H0 = { weights: [], foodLogs: [], targets: { calories: 2500, protein: 100, targetWeight: 65, startWeight: 56 } };
@@ -146,8 +147,35 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
 
       {/* Nutrition Card */}
       <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">TODAY'S NUTRITION</div>
+        <div className="flex justify-between items-center mb-2.5">
+          <div className="text-[11px] font-bold tracking-[2px] flex items-center gap-1.5">TODAY'S NUTRITION</div>
+          <button 
+            onClick={() => setShowDiet(!showDiet)}
+            className="text-[10px] tracking-[1px] border border-border px-2 py-0.5 hover:bg-muted uppercase transition-colors"
+          >
+            {showDiet ? 'HIDE DIET PLAN' : 'DIET PLAN'}
+          </button>
+        </div>
         
+        {showDiet && (
+          <div className="mb-4 bg-background border border-border p-3 text-[11px] leading-[1.6]">
+            <div className="font-bold tracking-[2px] mb-2 text-foreground">MUSCLE GAIN DIET PLAN (BUDGET)</div>
+            <ul className="text-muted-foreground space-y-1.5 list-none">
+              <li><span className="text-foreground">1. Wake Up:</span> Soaked Chane + Soyabean + Peanuts</li>
+              <li><span className="text-foreground">2. Breakfast:</span> Banana Shake + Oats + Dry Fruits + 1 Spoon Peanut Butter</li>
+              <li><span className="text-foreground">3. 11:00 AM:</span> Dahi / 2 Bananas / 1 Apple</li>
+              <li><span className="text-foreground">4. Lunch:</span> Normal Home Lunch + Extra Dahi (~30g)</li>
+              <li><span className="text-foreground">5. 5:00 PM:</span> 2 Brown Bread with Peanut Butter</li>
+              <li><span className="text-foreground">6. Post-Workout:</span> Banana Shake + 1 Scoop Creatine (5g)</li>
+              <li><span className="text-foreground">7. Optional:</span> 1 Scoop Whey Protein (if daily intake is low)</li>
+              <li><span className="text-foreground">8. Evening:</span> Paneer (~30g)</li>
+              <li><span className="text-foreground">9. Dinner:</span> Normal Home Dinner (Roti/Rice + Sabzi + Dal)</li>
+              <li><span className="text-foreground">10. Before Bed:</span> Milk + 1 Banana</li>
+              <li><span className="text-foreground">11. Supplements:</span> Ashwagandha + Gokshura</li>
+            </ul>
+          </div>
+        )}
+
         <div className="mb-3">
           <div className="flex justify-between mb-[3px]">
             <span className="text-[11px] tracking-[1px]">CALORIES</span>
