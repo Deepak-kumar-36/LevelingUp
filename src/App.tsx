@@ -34,29 +34,29 @@ export default function App() {
     if (!isReady || !data.setupDone) return;
     const yesterday = dKey(new Date(Date.now() - 86400000));
     if (data.lastBacklogCheck === yesterday) return;
-    
+
     const yData = data.dayData[yesterday];
-    if (!yData) { 
-      setData(d => ({ ...d, lastBacklogCheck: yesterday })); 
-      return; 
+    if (!yData) {
+      setData(d => ({ ...d, lastBacklogCheck: yesterday }));
+      return;
     }
-    
+
     const incomplete = myQuests.filter((q: any) => !(yData.quests || []).includes(q.id));
-    if (incomplete.length === 0) { 
-      setData(d => ({ ...d, lastBacklogCheck: yesterday })); 
-      return; 
+    if (incomplete.length === 0) {
+      setData(d => ({ ...d, lastBacklogCheck: yesterday }));
+      return;
     }
-    
+
     const existing = new Set((data.backlogs || []).map(b => b.id));
     const newBL = incomplete
       .filter((q: any) => !existing.has(q.id))
       .map((q: any) => ({ id: q.id, name: q.name, xp: Math.floor(q.xp / 2), coins: Math.floor(q.coins / 2) }));
-      
+
     if (newBL.length > 0) {
-      setData(d => ({ 
-        ...d, 
-        lastBacklogCheck: yesterday, 
-        backlogs: [...(d.backlogs || []), ...newBL] 
+      setData(d => ({
+        ...d,
+        lastBacklogCheck: yesterday,
+        backlogs: [...(d.backlogs || []), ...newBL]
       }));
     } else {
       setData(d => ({ ...d, lastBacklogCheck: yesterday }));
@@ -71,12 +71,12 @@ export default function App() {
         <h1 className="text-2xl font-bold tracking-[3px] mb-8 uppercase">Initialize Protocol</h1>
         <div className="max-w-md w-full bg-card border border-border p-6">
           <div className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Hunter Designation</div>
-          <input 
-            value={setupName} 
+          <input
+            value={setupName}
             onChange={e => setSetupName(e.target.value)}
             className="w-full bg-background border border-border p-2 mb-6 font-mono text-sm outline-none text-foreground"
           />
-          <button 
+          <button
             onClick={() => setData(d => ({ ...d, setupDone: true, user: { ...d.user, name: setupName.toUpperCase() } }))}
             className="w-full bg-foreground text-background border border-foreground p-3 font-bold tracking-widest uppercase hover:opacity-90"
           >
@@ -108,12 +108,12 @@ export default function App() {
         <div className="font-bold text-[13px] tracking-[3px]">
           &gt;_ LEVELING UP
         </div>
-        
+
         <div className="flex items-center gap-1 md:gap-1.5 overflow-x-auto no-scrollbar">
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1.5">
             {navs.map(n => (
-              <button 
+              <button
                 key={n.id}
                 onClick={() => setView(n.id)}
                 className={`px-3 py-1 border border-border text-[11px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
@@ -126,7 +126,7 @@ export default function App() {
           {/* Mobile Nav */}
           <div className="flex md:hidden items-center gap-1">
             {mainNavs.map(n => (
-              <button 
+              <button
                 key={n.id}
                 onClick={() => { setView(n.id); setShowMenu(false); }}
                 className={`px-2 py-1 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
@@ -136,7 +136,7 @@ export default function App() {
             ))}
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className={`px-2 py-1 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${showMenu || moreNavs.some(n=>n.id===view) ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
+              className={`px-2 py-1 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${showMenu || moreNavs.some(n => n.id === view) ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
             >
               MORE ▼
             </button>
@@ -152,7 +152,7 @@ export default function App() {
       {showMenu && (
         <div className="md:hidden flex flex-wrap gap-1 p-2 bg-card border-b border-border animate-in fade-in slide-in-from-top-2">
           {moreNavs.map(n => (
-            <button 
+            <button
               key={n.id}
               onClick={() => { setView(n.id); setShowMenu(false); }}
               className={`px-2 py-1 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background'}`}

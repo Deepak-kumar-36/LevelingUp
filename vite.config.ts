@@ -10,27 +10,27 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Leveling Up',
-        short_name: 'Leveling Up',
+        name: 'LevelingUp',
+        short_name: 'LevelingUp',
         description: 'Personal Life Operating System',
         theme_color: '#111111',
         background_color: '#111111',
         display: 'standalone',
         icons: [
           {
-            src: '/icon-192x192.png',
+            src: '/icons/icon-192.webp',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/webp'
           },
           {
-            src: '/icon-512x512.png',
+            src: '/icons/icon-512.webp',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/webp'
           }
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}']
       }
     })
   ],
