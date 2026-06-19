@@ -45,6 +45,14 @@ export const SICON: Record<string, string> = { intelligence: 'â—†', builder: 'â¬
 export const IC = ['transparent', '#16a34a', '#4ade80', '#86efac']; // Inten colors for dark mode (inverted slightly)
 export const IL = ['NONE', 'LOW', 'MEDIUM', 'HIGH'];
 
+export const DEFAULT_BOSSES = [
+  { id: 'b1', name: 'Mora Daemoni', title: 'The Procrastination Demon', maxHp: 1000, hp: 1000, xpReward: 2000, coinReward: 300, actionDesc: 'Complete a Deep Work Session', damage: 100 },
+  { id: 'b2', name: 'Sacchara Slime', title: 'The Sugar Slime', maxHp: 500, hp: 500, xpReward: 1000, coinReward: 150, actionDesc: 'Clean Diet Day', damage: 100 },
+  { id: 'b3', name: 'Ignis Corpus', title: 'The Couch Behemoth', maxHp: 2000, hp: 2000, xpReward: 5000, coinReward: 500, actionDesc: 'Heavy Workout', damage: 200 },
+  { id: 'b4', name: 'Tempus Fugit', title: 'The Chronos Wraith', maxHp: 1200, hp: 1200, xpReward: 2500, coinReward: 350, actionDesc: 'Complete 60min Pomodoro', damage: 100 },
+  { id: 'b5', name: 'Titanus Lxxv', title: 'The 75 Hard Titan', maxHp: 7500, hp: 7500, xpReward: 50000, coinReward: 5000, actionDesc: 'Flawless Daily Quests', damage: 100 }
+];
+
 export const INIT = {
   setupDone: false,
   user: {
@@ -60,5 +68,6 @@ export const INIT = {
   notes: [] as any[],
   health: { weights: [] as any[], foodLogs: [] as any[], targets: { calories: 2500, protein: 100, targetWeight: 65, startWeight: 56 } },
   finance: { expenses: [] as any[], monthlyBudget: 5000 },
+  bosses: DEFAULT_BOSSES as any[],
   lastBacklogCheck: null as string | null,
 };

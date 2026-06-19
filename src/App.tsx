@@ -9,13 +9,13 @@ import { HealthView } from './features/health/HealthView';
 import { FinanceView } from './features/finance/FinanceView';
 import { StatsView } from './features/stats/StatsView';
 import { ShopView } from './features/shop/ShopView';
+import { BossView } from './features/bosses/BossView';
 
 export default function App() {
   const { isReady, loadFromDb, data, setData } = useAppStore();
   const [view, setView] = useState('dash');
   const [setupName, setSetupName] = useState('DEEPAK');
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [showMenu, setShowMenu] = useState(false);
 
   const myQuests = data?.quests ?? DEF_QUESTS;
   const getRank = (xp: number) => RANKS.find(r => xp >= r.min && xp < r.max) ?? RANKS[5];
@@ -95,11 +95,9 @@ export default function App() {
     { id: 'health', label: 'HEALTH' },
     { id: 'finance', label: 'FINANCE' },
     { id: 'stats', label: 'STATS' },
-    { id: 'shop', label: 'SHOP' }
+    { id: 'shop', label: 'SHOP' },
+    { id: 'bosses', label: 'BOSSES' }
   ];
-
-  const mainNavs = navs.slice(0, 4);
-  const moreNavs = navs.slice(4);
 
   return (
     <div className="min-h-screen pb-[max(env(safe-area-inset-bottom),1rem)] md:pb-0">
@@ -109,59 +107,22 @@ export default function App() {
           &gt;_ LEVELING UP
         </div>
 
-        <div className="flex items-center gap-1 md:gap-1.5 overflow-x-auto no-scrollbar">
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1.5">
-            {navs.map(n => (
-              <button
-                key={n.id}
-                onClick={() => setView(n.id)}
-                className={`px-3 py-1 border border-border text-[11px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
-              >
-                {n.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Mobile Nav */}
-          <div className="flex md:hidden items-center gap-1">
-            {mainNavs.map(n => (
-              <button
-                key={n.id}
-                onClick={() => { setView(n.id); setShowMenu(false); }}
-                className={`px-2 py-2 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
-              >
-                {n.label}
-              </button>
-            ))}
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className={`px-2 py-2 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${showMenu || moreNavs.some(n => n.id === view) ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
-            >
-              MORE ▼
-            </button>
-          </div>
-
-          <div className="px-3 py-1 border border-border text-[11px] tracking-[1px] flex items-center gap-1 bg-background whitespace-nowrap ml-1 md:ml-0">
-            <span className="text-success">●</span> {getRank(data?.user?.totalXp ?? 0).l} | {data?.user?.name || 'USER'}
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile More Menu */}
-      {showMenu && (
-        <div className="md:hidden flex flex-wrap gap-1 p-2 bg-card border-b border-border animate-in fade-in slide-in-from-top-2">
-          {moreNavs.map(n => (
+        <div className="flex flex-1 md:flex-none items-center gap-1 md:gap-1.5 overflow-x-auto no-scrollbar">
+          {navs.map(n => (
             <button
               key={n.id}
-              onClick={() => { setView(n.id); setShowMenu(false); }}
-              className={`px-2 py-1 border border-border text-[10px] tracking-[1px] uppercase transition-colors whitespace-nowrap ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background'}`}
+              onClick={() => setView(n.id)}
+              className={`px-2 md:px-3 py-2 md:py-1 border border-border text-[10px] md:text-[11px] tracking-[1px] uppercase transition-colors whitespace-nowrap flex-shrink-0 ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
             >
               {n.label}
             </button>
           ))}
         </div>
-      )}
+
+        <div className="px-3 py-1 border border-border text-[11px] tracking-[1px] flex items-center gap-1 bg-background whitespace-nowrap ml-auto">
+          <span className="text-success">●</span> {getRank(data?.user?.totalXp ?? 0).l} | {data?.user?.name || 'USER'}
+        </div>
+      </div>
 
       {/* Main Content */}
       <div className="p-3 md:p-4">
@@ -173,6 +134,7 @@ export default function App() {
         {view === 'finance' && <FinanceView toast={toast} />}
         {view === 'stats' && <StatsView />}
         {view === 'shop' && <ShopView toast={toast} />}
+        {view === 'bosses' && <BossView toast={toast} />}
       </div>
 
       {/* Toast Notification */}
