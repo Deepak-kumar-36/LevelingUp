@@ -60,15 +60,15 @@ export function InventoryView({ toast }: { toast: (msg: string) => void }) {
 
   return (
     <div className="animate-in fade-in flex flex-col gap-3">
-      <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-3 flex items-center gap-1.5">🛡 EQUIPPED GEAR</div>
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+        <div className="text-[11px] font-bold tracking-wide mb-3 flex items-center gap-1.5">🛡 EQUIPPED GEAR</div>
         
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
           {slots.map(slot => {
             const item = equippedItems[slot];
             return (
               <div key={slot} className="border border-border p-2 flex flex-col items-center text-center">
-                <div className="text-[9px] text-muted-foreground tracking-[2px] uppercase mb-1">{slot}</div>
+                <div className="text-[9px] text-muted-foreground tracking-wide uppercase mb-1">{slot}</div>
                 {item ? (
                   <>
                     <div className="text-[11px] font-bold uppercase mb-1">{item.name}</div>
@@ -77,7 +77,7 @@ export function InventoryView({ toast }: { toast: (msg: string) => void }) {
                     </div>
                     <button 
                       onClick={() => unequipItem(slot)}
-                      className="text-[9px] tracking-[1px] uppercase border border-border px-2 py-1 hover:bg-muted"
+                      className="text-[9px] tracking-wide uppercase border border-border px-2 py-1 hover:bg-muted"
                     >
                       UNEQUIP
                     </button>
@@ -91,7 +91,7 @@ export function InventoryView({ toast }: { toast: (msg: string) => void }) {
         </div>
 
         <div className="border border-border p-3 bg-muted/20">
-          <div className="text-[10px] tracking-[2px] mb-2 font-bold uppercase">TOTAL EQUIPMENT BONUS</div>
+          <div className="text-[10px] tracking-wide mb-2 font-bold uppercase">TOTAL EQUIPMENT BONUS</div>
           <div className="flex flex-wrap gap-3">
             {Object.entries(bonusStats).filter(([,v]) => v > 0).map(([k, v]) => (
               <div key={k} className="text-[11px] uppercase"><span className="text-success font-bold">+{v}</span> {k}</div>
@@ -103,8 +103,8 @@ export function InventoryView({ toast }: { toast: (msg: string) => void }) {
         </div>
       </div>
 
-      <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-3 flex items-center gap-1.5">🎒 INVENTORY</div>
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+        <div className="text-[11px] font-bold tracking-wide mb-3 flex items-center gap-1.5">🎒 INVENTORY</div>
         {inventoryItems.length === 0 ? (
           <div className="text-[11px] text-muted-foreground uppercase py-4 text-center">
             Your inventory is empty. Visit the Blacksmith in the shop to acquire gear.
@@ -116,8 +116,8 @@ export function InventoryView({ toast }: { toast: (msg: string) => void }) {
               return (
                 <div key={item.id} className="border border-border p-3">
                   <div className="flex justify-between items-start mb-1">
-                    <div className="font-bold tracking-[1px] text-[11px] uppercase">{item.name}</div>
-                    <div className="text-[9px] text-muted-foreground tracking-[1px] uppercase border border-border px-1">
+                    <div className="font-bold tracking-wide text-[11px] uppercase">{item.name}</div>
+                    <div className="text-[9px] text-muted-foreground tracking-wide uppercase border border-border px-1">
                       {item.slot}
                     </div>
                   </div>
@@ -127,7 +127,7 @@ export function InventoryView({ toast }: { toast: (msg: string) => void }) {
                   <button
                     onClick={() => equipItem(item)}
                     disabled={isEquipped}
-                    className={`w-full p-2 text-[10px] tracking-[2px] uppercase border border-border transition-colors ${
+                    className={`w-full p-2 text-[10px] tracking-wide uppercase border border-border transition-colors ${
                       isEquipped ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-background hover:bg-muted'
                     }`}
                   >

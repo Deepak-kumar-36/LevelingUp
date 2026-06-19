@@ -7,8 +7,8 @@ export function AchievementsView() {
 
   return (
     <div className="animate-in fade-in flex flex-col gap-3">
-      <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center justify-between">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+        <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center justify-between">
           <div className="flex items-center gap-1.5">🏆 ACHIEVEMENTS</div>
           <span className="text-[11px] text-muted-foreground font-normal tracking-normal">
             {unlocked.size} / {ACHIEVEMENTS.length}
@@ -31,13 +31,13 @@ export function AchievementsView() {
                   {isUnlocked ? '🏆' : '🔒'}
                 </div>
                 <div>
-                  <div className={`font-bold tracking-[2px] mb-1 text-[12px] uppercase ${isUnlocked ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  <div className={`font-bold tracking-wide mb-1 text-[12px] uppercase ${isUnlocked ? 'text-foreground' : 'text-muted-foreground'}`}>
                     {a.name}
                   </div>
                   <div className="text-[10px] text-muted-foreground mb-1.5 leading-[1.4] uppercase">
                     {a.desc}
                   </div>
-                  <div className="text-[10px] font-bold tracking-[1px] text-success">
+                  <div className="text-[10px] font-bold tracking-wide text-success">
                     +{a.xpReward} XP
                   </div>
                 </div>

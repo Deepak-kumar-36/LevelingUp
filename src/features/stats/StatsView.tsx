@@ -66,22 +66,22 @@ export function StatsView() {
   return (
     <div className="animate-in fade-in flex flex-col gap-3">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="bg-card border border-border p-3">
-          <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">🔥 STREAKS</div>
+        <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+          <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">🔥 STREAKS</div>
           <div className="mb-3.5">
-            <div className="text-[11px] text-muted-foreground tracking-[1px]">CURRENT STREAK</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide">CURRENT STREAK</div>
             <div className={`text-[32px] font-bold leading-[1.1] ${streak > 0 ? 'text-success' : 'text-foreground'}`}>
               {streak} DAYS
             </div>
           </div>
           <div>
-            <div className="text-[11px] text-muted-foreground tracking-[1px]">LONGEST STREAK</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide">LONGEST STREAK</div>
             <div className="text-[20px] font-bold">{data.user.longestStreak} DAYS</div>
           </div>
         </div>
 
-        <div className="bg-card border border-border p-3">
-          <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">OVERVIEW</div>
+        <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+          <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">OVERVIEW</div>
           {[
             ['DAYS TRACKED', total],
             ['TOTAL XP', data.user.totalXp.toLocaleString()],
@@ -89,14 +89,14 @@ export function StatsView() {
             ['NOTES WRITTEN', (data.notes ?? []).length]
           ].map(([l, v]) => (
             <div key={l as string} className="flex justify-between py-1.5 border-b border-border text-[11px]">
-              <span className="text-muted-foreground tracking-[1px]">{l}</span>
+              <span className="text-muted-foreground tracking-wide">{l}</span>
               <span className="font-bold">{v}</span>
             </div>
           ))}
         </div>
 
-        <div className="bg-card border border-border p-3">
-          <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">⬡ CHARACTER STATS</div>
+        <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+          <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">⬡ CHARACTER STATS</div>
           {STATS.map(stat => {
             const val = data.user.stats[stat as keyof typeof data.user.stats];
             const bonus = bonusStats[stat as keyof typeof bonusStats];
@@ -104,7 +104,7 @@ export function StatsView() {
             return (
               <div key={stat} className="mb-2">
                 <div className="flex justify-between mb-0.5">
-                  <span className="text-[11px] tracking-[1px]">{SICON[stat]} {stat.toUpperCase()}</span>
+                  <span className="text-[11px] tracking-wide">{SICON[stat]} {stat.toUpperCase()}</span>
                   <span className="text-[11px] font-bold">
                     {val} {bonus > 0 && <span className="text-success ml-1">+{bonus}</span>}
                   </span>
@@ -119,8 +119,8 @@ export function StatsView() {
         </div>
       </div>
 
-      <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">📈 XP GAINS (LAST 14 DAYS)</div>
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+        <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">📈 XP GAINS (LAST 14 DAYS)</div>
         <div className="h-[120px] w-full -ml-4">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={xpData}>
@@ -143,13 +143,13 @@ export function StatsView() {
         </div>
       </div>
 
-      <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">COMPLETION RATES</div>
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+        <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">COMPLETION RATES</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
           {qRates.map(q => (
             <div key={q.id}>
               <div className="flex justify-between mb-0.5">
-                <span className="text-[11px] tracking-[1px]">{q.name}</span>
+                <span className="text-[11px] tracking-wide">{q.name}</span>
                 <span className="text-[11px] font-bold">{q.rate}%</span>
               </div>
               <div className="h-[6px] bg-muted overflow-hidden">
@@ -160,8 +160,8 @@ export function StatsView() {
         </div>
       </div>
 
-      <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">DAILY PATTERNS</div>
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+        <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">DAILY PATTERNS</div>
         <div className="grid grid-cols-7 gap-2">
           {DAYS.map((day, di) => {
             const { qc, tot } = dow[di];
@@ -169,7 +169,7 @@ export function StatsView() {
             const avg = tot ? Math.round((sum / tot / myQuests.length) * 100) : 0;
             return (
               <div key={day} className="text-center">
-                <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1.5">{day}</div>
+                <div className="text-[11px] text-muted-foreground tracking-wide mb-1.5">{day}</div>
                 {myQuests.map((q: any, qi: number) => {
                   const p = tot ? Math.round((qc[qi] / tot) * 100) : 0;
                   return (

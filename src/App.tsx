@@ -128,7 +128,7 @@ export default function App() {
               &gt;_ LEVELING UP
             </div>
           </div>
-          <div className="px-3 py-1 border border-border text-[11px] tracking-[1px] flex items-center gap-1 bg-background whitespace-nowrap">
+          <div className="px-3 py-1 border border-border text-[11px] tracking-wide flex items-center gap-1 bg-background whitespace-nowrap">
             <span className="text-success">●</span> {getRank(data?.user?.totalXp ?? 0).l} | {data?.user?.name || 'USER'}
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function App() {
                 vibrateLight();
                 setView(n.id);
               }}
-              className={`px-3 py-2 md:py-1 border border-border text-[10px] md:text-[11px] tracking-[1px] uppercase transition-colors whitespace-nowrap flex-shrink-0 ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
+              className={`px-3 py-2 md:py-1 border border-border text-[10px] md:text-[11px] tracking-wide uppercase transition-colors whitespace-nowrap flex-shrink-0 ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
             >
               {n.label}
             </button>
@@ -168,7 +168,7 @@ export default function App() {
 
       {/* Toast Notification */}
       {toastMsg && (
-        <div className="fixed bottom-4 right-4 bg-foreground text-background px-4 py-2 text-[11px] font-bold tracking-[2px] shadow-lg animate-in slide-in-from-bottom-4 z-50">
+        <div className="fixed bottom-4 right-4 bg-foreground text-background px-4 py-2 text-[11px] font-bold tracking-wide shadow-lg animate-in slide-in-from-bottom-4 z-50">
           {toastMsg}
         </div>
       )}

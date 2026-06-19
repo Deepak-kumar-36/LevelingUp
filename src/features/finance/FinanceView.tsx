@@ -54,10 +54,10 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
     <div className="animate-in fade-in flex flex-col gap-3">
       <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-3">
         {/* Month Summary */}
-        <div className="bg-card border border-border p-3">
-          <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">💰 MONTHLY</div>
+        <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+          <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">💰 MONTHLY</div>
           <div className="mb-2">
-            <div className="text-[11px] text-muted-foreground tracking-[1px]">{MONTHS_S[m]} {y}</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide">{MONTHS_S[m]} {y}</div>
             <div className={`text-[24px] font-bold ${mTotal > budget ? 'text-destructive' : 'text-foreground'}`}>
               ₹{mTotal.toLocaleString()}
             </div>
@@ -70,26 +70,26 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
           </div>
           <div className="flex flex-wrap gap-4 mt-2 mb-3">
             <div>
-              <div className="text-[11px] text-muted-foreground tracking-[1px]">BUDGET</div>
+              <div className="text-[11px] text-muted-foreground tracking-wide">BUDGET</div>
               <div className="font-bold">₹{budget.toLocaleString()}</div>
             </div>
             <div>
-              <div className="text-[11px] text-muted-foreground tracking-[1px]">LEFT</div>
+              <div className="text-[11px] text-muted-foreground tracking-wide">LEFT</div>
               <div className={`font-bold ${remaining < 0 ? 'text-destructive' : 'text-success'}`}>
                 ₹{remaining.toLocaleString()}
               </div>
             </div>
           </div>
           <div className="flex gap-1.5 mt-3">
-            <button onClick={() => setMDate(new Date(y, m - 1, 1))} className="px-2 py-1 bg-background border border-border text-[11px] tracking-[1px] flex-1 hover:bg-muted">◀</button>
-            <button onClick={() => setMDate(new Date())} className="px-2 py-1 bg-background border border-border text-[11px] tracking-[1px] flex-1 hover:bg-muted">NOW</button>
-            <button onClick={() => setMDate(new Date(y, m + 1, 1))} className="px-2 py-1 bg-background border border-border text-[11px] tracking-[1px] flex-1 hover:bg-muted">▶</button>
+            <button onClick={() => setMDate(new Date(y, m - 1, 1))} className="px-2 py-1 bg-background border border-border text-[11px] tracking-wide flex-1 hover:bg-muted">◀</button>
+            <button onClick={() => setMDate(new Date())} className="px-2 py-1 bg-background border border-border text-[11px] tracking-wide flex-1 hover:bg-muted">NOW</button>
+            <button onClick={() => setMDate(new Date(y, m + 1, 1))} className="px-2 py-1 bg-background border border-border text-[11px] tracking-wide flex-1 hover:bg-muted">▶</button>
           </div>
         </div>
 
         {/* Category Breakdown */}
-        <div className="bg-card border border-border p-3">
-          <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">BY CATEGORY</div>
+        <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+          <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">BY CATEGORY</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
             {EXP_CATS.map(c => {
               const a = catTotals[c] ?? 0;
@@ -97,7 +97,7 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
               return (
                 <div key={c} className="mb-2.5">
                   <div className="flex justify-between mb-[3px]">
-                    <span className="text-[11px] tracking-[1px] uppercase">{c}</span>
+                    <span className="text-[11px] tracking-wide uppercase">{c}</span>
                     <span className="text-[11px]">₹{a.toLocaleString()} · {pct}%</span>
                   </div>
                   <div className="h-[6px] bg-muted overflow-hidden">
@@ -115,9 +115,9 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
 
       <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-3">
         {/* Add Form */}
-        <div className="bg-card border border-border p-3">
-          <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">+ LOG EXPENSE</div>
-          <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1">AMOUNT (₹)</div>
+        <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+          <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">+ LOG EXPENSE</div>
+          <div className="text-[11px] text-muted-foreground tracking-wide mb-1">AMOUNT (₹)</div>
           <input 
             value={amt} 
             onChange={e => setAmt(e.target.value)} 
@@ -125,44 +125,44 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
             type="number"
             className="w-full bg-background border border-border p-2 mb-2 font-mono text-[14px] outline-none text-foreground"
           />
-          <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1">CATEGORY</div>
+          <div className="text-[11px] text-muted-foreground tracking-wide mb-1">CATEGORY</div>
           <select 
             value={cat} 
             onChange={e => setCat(e.target.value)}
-            className="w-full bg-background border border-border p-1.5 mb-2 font-mono text-[11px] outline-none text-foreground tracking-[1px]"
+            className="w-full bg-background border border-border p-1.5 mb-2 font-mono text-[11px] outline-none text-foreground tracking-wide"
           >
             {EXP_CATS.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
-          <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1">DESCRIPTION</div>
+          <div className="text-[11px] text-muted-foreground tracking-wide mb-1">DESCRIPTION</div>
           <input 
             value={desc} 
             onChange={e => setDesc(e.target.value)} 
             placeholder="LUNCH, AUTO, BOOK..."
-            className="w-full bg-background border border-border p-1.5 mb-3 font-mono text-[11px] outline-none text-foreground tracking-[1px]"
+            className="w-full bg-background border border-border p-1.5 mb-3 font-mono text-[11px] outline-none text-foreground tracking-wide"
           />
           <button 
             onClick={add} 
-            className="w-full bg-foreground text-background border border-foreground p-2.5 text-[11px] tracking-[2px] uppercase font-bold hover:opacity-90 transition-opacity"
+            className="w-full bg-foreground text-background border border-foreground p-2.5 text-[11px] tracking-wide uppercase font-bold hover:opacity-90 transition-opacity"
           >
             LOG EXPENSE
           </button>
         </div>
 
         {/* Expense List */}
-        <div className="bg-card border border-border p-3">
-          <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">EXPENSE LOG</div>
+        <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+          <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">EXPENSE LOG</div>
           {mExp.length === 0 ? (
-            <div className="text-[11px] text-muted-foreground tracking-[1px]">No expenses logged this month.</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide">No expenses logged this month.</div>
           ) : (
             <div className="flex flex-col">
               {[...mExp].sort((a, b) => b.date.localeCompare(a.date)).map(e => (
                 <div key={e.id} className="flex items-center justify-between py-1.5 border-b border-border text-[11px]">
                   <div>
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-[9px] px-1.5 py-[1px] border border-muted-foreground bg-background tracking-[1px]">{e.category}</span>
-                      <span className="tracking-[1px] uppercase">{e.description}</span>
+                      <span className="text-[9px] px-1.5 py-[1px] border border-muted-foreground bg-background tracking-wide">{e.category}</span>
+                      <span className="tracking-wide uppercase">{e.description}</span>
                     </div>
-                    <div className="text-[11px] text-muted-foreground tracking-[1px] mt-0.5">{e.date}</div>
+                    <div className="text-[11px] text-muted-foreground tracking-wide mt-0.5">{e.date}</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-bold">₹{e.amount.toLocaleString()}</span>

@@ -87,41 +87,41 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
   return (
     <div className="animate-in fade-in flex flex-col gap-3">
       {/* Profile Card */}
-      <div className="bg-card border border-border p-4">
-        <div className="text-[11px] font-bold tracking-[2px] mb-3 flex items-center gap-1.5">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4">
+        <div className="text-[11px] font-bold tracking-wide mb-3 flex items-center gap-1.5">
           ⚙ HUNTER PROFILE
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-[1px] uppercase mb-1">NAME</div>
-            <div className="text-[14px] font-bold tracking-[2px]">{data.user?.name || 'UNKNOWN'}</div>
+            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">NAME</div>
+            <div className="text-[14px] font-bold tracking-wide">{data.user?.name || 'UNKNOWN'}</div>
           </div>
           <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-[1px] uppercase mb-1">TOTAL XP</div>
-            <div className="text-[14px] font-bold tracking-[1px]">{(data.user?.totalXp || 0).toLocaleString()}</div>
+            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">TOTAL XP</div>
+            <div className="text-[14px] font-bold tracking-wide">{(data.user?.totalXp || 0).toLocaleString()}</div>
           </div>
           <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-[1px] uppercase mb-1">DAYS ACTIVE</div>
-            <div className="text-[14px] font-bold tracking-[1px]">{totalDays}</div>
+            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">DAYS ACTIVE</div>
+            <div className="text-[14px] font-bold tracking-wide">{totalDays}</div>
           </div>
           <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-[1px] uppercase mb-1">QUESTS DONE</div>
-            <div className="text-[14px] font-bold tracking-[1px]">{totalQuestsCompleted}</div>
+            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">QUESTS DONE</div>
+            <div className="text-[14px] font-bold tracking-wide">{totalQuestsCompleted}</div>
           </div>
           <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-[1px] uppercase mb-1">LONGEST STREAK</div>
-            <div className="text-[14px] font-bold tracking-[1px]">🔥 {data.user?.longestStreak || 0}D</div>
+            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">LONGEST STREAK</div>
+            <div className="text-[14px] font-bold tracking-wide">🔥 {data.user?.longestStreak || 0}D</div>
           </div>
           <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-[1px] uppercase mb-1">BOSSES SLAIN</div>
-            <div className="text-[14px] font-bold tracking-[1px]">☠ {bossesDefeated}</div>
+            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">BOSSES SLAIN</div>
+            <div className="text-[14px] font-bold tracking-wide">☠ {bossesDefeated}</div>
           </div>
         </div>
       </div>
 
       {/* Theme Selection */}
-      <div className="bg-card border border-border p-4">
-        <div className="text-[11px] font-bold tracking-[2px] mb-3 flex items-center gap-1.5">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4">
+        <div className="text-[11px] font-bold tracking-wide mb-3 flex items-center gap-1.5">
           🎨 TERMINAL THEME
         </div>
         <div className="grid grid-cols-1 gap-2">
@@ -131,12 +131,12 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
             const canAfford = data.user.coins >= t.cost;
             return (
               <div key={t.id} className={`flex justify-between items-center p-3 border ${active ? 'border-foreground bg-foreground text-background' : 'border-border'}`}>
-                <div className="text-[11px] font-bold tracking-[2px] uppercase">{t.name}</div>
+                <div className="text-[11px] font-bold tracking-wide uppercase">{t.name}</div>
                 {unlocked ? (
                   <button
                     onClick={() => selectTheme(t.id)}
                     disabled={active}
-                    className={`text-[10px] tracking-[2px] uppercase px-3 py-1 border transition-colors ${active ? 'border-background text-background' : 'border-border bg-background hover:bg-muted'}`}
+                    className={`text-[10px] tracking-wide uppercase px-3 py-1 border transition-colors ${active ? 'border-background text-background' : 'border-border bg-background hover:bg-muted'}`}
                   >
                     {active ? 'ACTIVE' : 'SELECT'}
                   </button>
@@ -144,7 +144,7 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
                   <button
                     onClick={() => purchaseTheme(t.id, t.cost)}
                     disabled={!canAfford}
-                    className={`text-[10px] tracking-[2px] uppercase px-3 py-1 border transition-colors ${canAfford ? 'border-foreground bg-foreground text-background hover:opacity-90' : 'border-border bg-muted text-muted-foreground opacity-50 cursor-not-allowed'}`}
+                    className={`text-[10px] tracking-wide uppercase px-3 py-1 border transition-colors ${canAfford ? 'border-foreground bg-foreground text-background hover:opacity-90' : 'border-border bg-muted text-muted-foreground opacity-50 cursor-not-allowed'}`}
                   >
                     {t.cost} COINS
                   </button>
@@ -156,25 +156,25 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
       </div>
 
       {/* Backup & Restore */}
-      <div className="bg-card border border-border p-4">
-        <div className="text-[11px] font-bold tracking-[2px] mb-1 flex items-center gap-1.5">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4">
+        <div className="text-[11px] font-bold tracking-wide mb-1 flex items-center gap-1.5">
           💾 BACKUP & RESTORE
         </div>
-        <div className="text-[10px] text-muted-foreground tracking-[1px] mb-4 uppercase">
+        <div className="text-[10px] text-muted-foreground tracking-wide mb-4 uppercase">
           Your data is stored locally. Export it to keep it safe.
         </div>
 
         <div className="flex flex-col gap-2">
           <button
             onClick={exportData}
-            className="w-full p-3 bg-foreground text-background border border-foreground text-[11px] font-bold tracking-[2px] uppercase hover:opacity-90"
+            className="w-full p-3 bg-foreground text-background border border-foreground text-[11px] font-bold tracking-wide uppercase hover:opacity-90"
           >
             ↓ EXPORT BACKUP
           </button>
 
           <button
             onClick={() => fileInput.current?.click()}
-            className="w-full p-3 bg-background border border-border text-[11px] font-bold tracking-[2px] uppercase hover:bg-muted"
+            className="w-full p-3 bg-background border border-border text-[11px] font-bold tracking-wide uppercase hover:bg-muted"
           >
             ↑ IMPORT BACKUP
           </button>
@@ -190,17 +190,17 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
 
       {/* Danger Zone */}
       <div className="bg-card border border-destructive p-4">
-        <div className="text-[11px] font-bold tracking-[2px] mb-1 flex items-center gap-1.5 text-destructive">
+        <div className="text-[11px] font-bold tracking-wide mb-1 flex items-center gap-1.5 text-destructive">
           ⚠ DANGER ZONE
         </div>
-        <div className="text-[10px] text-muted-foreground tracking-[1px] mb-4 uppercase">
+        <div className="text-[10px] text-muted-foreground tracking-wide mb-4 uppercase">
           This will permanently erase all your progress.
         </div>
 
         {!showReset ? (
           <button
             onClick={() => setShowReset(true)}
-            className="w-full p-3 border border-destructive text-destructive text-[11px] font-bold tracking-[2px] uppercase hover:bg-destructive hover:text-destructive-foreground transition-colors"
+            className="w-full p-3 border border-destructive text-destructive text-[11px] font-bold tracking-wide uppercase hover:bg-destructive hover:text-destructive-foreground transition-colors"
           >
             FACTORY RESET
           </button>
@@ -208,13 +208,13 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
           <div className="flex gap-2">
             <button
               onClick={() => setShowReset(false)}
-              className="flex-1 p-3 border border-border text-[11px] tracking-[2px] uppercase bg-background hover:bg-muted"
+              className="flex-1 p-3 border border-border text-[11px] tracking-wide uppercase bg-background hover:bg-muted"
             >
               CANCEL
             </button>
             <button
               onClick={resetAll}
-              className="flex-1 p-3 bg-destructive text-destructive-foreground border border-destructive text-[11px] font-bold tracking-[2px] uppercase"
+              className="flex-1 p-3 bg-destructive text-destructive-foreground border border-destructive text-[11px] font-bold tracking-wide uppercase"
             >
               CONFIRM RESET
             </button>
@@ -223,11 +223,11 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
       </div>
 
       {/* App Info */}
-      <div className="bg-card border border-border p-4">
-        <div className="text-[11px] font-bold tracking-[2px] mb-3 flex items-center gap-1.5">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4">
+        <div className="text-[11px] font-bold tracking-wide mb-3 flex items-center gap-1.5">
           ℹ ABOUT
         </div>
-        <div className="space-y-1 text-[11px] text-muted-foreground tracking-[1px]">
+        <div className="space-y-1 text-[11px] text-muted-foreground tracking-wide">
           <div>APP: LEVELING UP v1.0</div>
           <div>DATA: 100% OFFLINE</div>
           <div>STORAGE: LOCAL INDEXEDDB</div>

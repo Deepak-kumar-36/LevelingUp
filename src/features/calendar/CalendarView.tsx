@@ -17,29 +17,29 @@ export function CalendarView() {
 
   return (
     <div className="animate-in fade-in grid grid-cols-1 md:grid-cols-[1fr_270px] gap-3">
-      <div className="bg-card border border-border p-3">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
         <div className="flex flex-wrap items-center justify-between mb-3 gap-2">
-          <div className="text-[11px] font-bold tracking-[2px] flex items-center gap-1.5">
+          <div className="text-[11px] font-bold tracking-wide flex items-center gap-1.5">
             HABIT CALENDAR
           </div>
           <div className="flex items-center gap-1.5 flex-wrap">
             <button 
-              className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-[1px] uppercase hover:bg-muted"
+              className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-wide uppercase hover:bg-muted"
               onClick={() => setCalDate(new Date(y, m - 1, 1))}
             >
               PREV
             </button>
-            <div className="px-3 py-1 border border-border bg-card text-[12px] font-bold tracking-[2px]">
+            <div className="px-3 py-1 border border-border bg-card text-[12px] font-bold tracking-wide">
               {MONTHS[m]} {y}
             </div>
             <button 
-              className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-[1px] uppercase hover:bg-muted"
+              className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-wide uppercase hover:bg-muted"
               onClick={() => setCalDate(new Date(y, m + 1, 1))}
             >
               NEXT
             </button>
             <button 
-              className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-[1px] uppercase hover:bg-muted"
+              className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-wide uppercase hover:bg-muted"
               onClick={() => setCalDate(new Date())}
             >
               TODAY
@@ -49,7 +49,7 @@ export function CalendarView() {
 
         <div className="grid grid-cols-7 gap-0.5 mb-0.5">
           {DAYS.map(d => (
-            <div key={d} className="text-center text-[11px] text-muted-foreground tracking-[1px] py-1">
+            <div key={d} className="text-center text-[11px] text-muted-foreground tracking-wide py-1">
               {d}
             </div>
           ))}
@@ -89,7 +89,7 @@ export function CalendarView() {
           })}
         </div>
 
-        <div className="flex flex-wrap gap-3 mt-3 items-center text-[11px] text-muted-foreground tracking-[1px]">
+        <div className="flex flex-wrap gap-3 mt-3 items-center text-[11px] text-muted-foreground tracking-wide">
           <span>INTENSITY LEVEL:</span>
           {IL.map((l, i) => (
             <div key={l} className="flex items-center gap-1">
@@ -100,8 +100,8 @@ export function CalendarView() {
         </div>
       </div>
 
-      <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+        <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">
           DAILY SUMMARY
         </div>
         {selDay ? (() => {
@@ -112,37 +112,37 @@ export function CalendarView() {
           return (
             <div>
               <div className="mb-2.5 pb-2 border-b border-border">
-                <div className="font-bold tracking-[1px] mb-0.5 text-[13px]">
+                <div className="font-bold tracking-wide mb-0.5 text-[13px]">
                   {MONTHS_S[dt.getMonth()]} {dt.getDate()}, {dt.getFullYear()}
                 </div>
-                <div className="text-[11px] text-muted-foreground tracking-[1px]">
+                <div className="text-[11px] text-muted-foreground tracking-wide">
                   {sd.quests.length}/{myQuests.length} · {IL[inten]}
                 </div>
               </div>
               <div className="flex gap-4 mb-3">
                 <div>
-                  <div className="text-[11px] text-muted-foreground tracking-[1px]">XP</div>
+                  <div className="text-[11px] text-muted-foreground tracking-wide">XP</div>
                   <div className="font-bold text-[16px]">{sd.xp ?? 0}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-muted-foreground tracking-[1px]">COINS</div>
+                  <div className="text-[11px] text-muted-foreground tracking-wide">COINS</div>
                   <div className="font-bold text-[16px]">{sd.coins ?? 0}</div>
                 </div>
               </div>
-              <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1.5">QUESTS</div>
+              <div className="text-[11px] text-muted-foreground tracking-wide mb-1.5">QUESTS</div>
               {myQuests.map((q: any) => {
                 const done = sd.quests.includes(q.id);
                 return (
                   <div key={q.id} className="text-[11px] py-1.5 border-b border-border flex gap-2 items-center">
                     <span className={done ? 'text-success' : 'text-muted'}>{done ? '✓' : '○'}</span>
-                    <span className={`tracking-[1px] ${done ? 'opacity-100' : 'opacity-40'}`}>{q.name}</span>
+                    <span className={`tracking-wide ${done ? 'opacity-100' : 'opacity-40'}`}>{q.name}</span>
                   </div>
                 );
               })}
             </div>
           );
         })() : (
-          <div className="text-[11px] text-muted-foreground tracking-[1px] leading-relaxed">
+          <div className="text-[11px] text-muted-foreground tracking-wide leading-relaxed">
             Select a day in the calendar to see a summary.
           </div>
         )}

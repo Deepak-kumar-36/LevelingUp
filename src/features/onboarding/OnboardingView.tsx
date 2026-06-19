@@ -98,11 +98,11 @@ export function OnboardingView() {
             </g>
           </svg>
           <h1 className="text-xl font-bold tracking-[4px] mb-2 uppercase">LEVELING UP</h1>
-          <p className="text-[11px] text-muted-foreground tracking-[2px] mb-8 uppercase">
+          <p className="text-[11px] text-muted-foreground tracking-wide mb-8 uppercase">
             Turn your life into a game
           </p>
 
-          <div className="bg-card border border-border p-6 text-left">
+          <div className="bg-card border border-border/50 rounded-xl card-shadow p-6 text-left">
             <div className="text-[10px] text-muted-foreground uppercase tracking-[3px] mb-2">
               What is your Hunter name?
             </div>
@@ -110,7 +110,7 @@ export function OnboardingView() {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="ENTER YOUR NAME"
-              className="w-full bg-background border border-border p-3 mb-4 font-mono text-sm outline-none text-foreground tracking-[2px] uppercase"
+              className="w-full bg-background border border-border p-3 mb-4 font-mono text-sm outline-none text-foreground tracking-wide uppercase"
               autoFocus
             />
             <button
@@ -132,7 +132,7 @@ export function OnboardingView() {
       {step === 1 && (
         <div className="max-w-md w-full text-center fade-in">
           <h2 className="text-lg font-bold tracking-[3px] mb-1 uppercase">CHOOSE YOUR PATH</h2>
-          <p className="text-[10px] text-muted-foreground tracking-[2px] mb-6 uppercase">
+          <p className="text-[10px] text-muted-foreground tracking-wide mb-6 uppercase">
             Pick the areas you want to level up (select multiple)
           </p>
 
@@ -150,8 +150,8 @@ export function OnboardingView() {
                   }`}
                 >
                   <div className="text-xl mb-1">{area.icon}</div>
-                  <div className="text-[11px] font-bold tracking-[2px] uppercase">{area.label}</div>
-                  <div className="text-[9px] tracking-[1px] mt-1 opacity-70">
+                  <div className="text-[11px] font-bold tracking-wide uppercase">{area.label}</div>
+                  <div className="text-[9px] tracking-wide mt-1 opacity-70">
                     {area.quests.length} QUESTS
                   </div>
                 </button>
@@ -162,7 +162,7 @@ export function OnboardingView() {
           <div className="flex gap-2">
             <button
               onClick={() => setStep(0)}
-              className="px-4 py-3 border border-border text-[11px] tracking-[2px] uppercase bg-background hover:bg-muted"
+              className="px-4 py-3 border border-border text-[11px] tracking-wide uppercase bg-background hover:bg-muted"
             >
               ← BACK
             </button>
@@ -185,27 +185,27 @@ export function OnboardingView() {
       {step === 2 && (
         <div className="max-w-md w-full text-center fade-in">
           <h2 className="text-lg font-bold tracking-[3px] mb-1 uppercase">READY, {name.toUpperCase()}?</h2>
-          <p className="text-[10px] text-muted-foreground tracking-[2px] mb-6 uppercase">
+          <p className="text-[10px] text-muted-foreground tracking-wide mb-6 uppercase">
             Here is your starting loadout
           </p>
 
-          <div className="bg-card border border-border p-4 mb-4 text-left">
-            <div className="text-[10px] font-bold tracking-[2px] mb-3 text-muted-foreground uppercase">
+          <div className="bg-card border border-border/50 rounded-xl card-shadow p-4 mb-4 text-left">
+            <div className="text-[10px] font-bold tracking-wide mb-3 text-muted-foreground uppercase">
               YOUR DAILY QUESTS
             </div>
             {FOCUS_AREAS.filter(a => selected.includes(a.id)).flatMap(a => a.quests).map((q: any) => (
               <div key={q.id} className="flex justify-between py-1.5 border-b border-border text-[11px]">
-                <span className="tracking-[1px]">{q.name}</span>
+                <span className="tracking-wide">{q.name}</span>
                 <span className="text-muted-foreground">+{q.xp} XP</span>
               </div>
             ))}
           </div>
 
-          <div className="bg-card border border-border p-4 mb-6 text-left">
-            <div className="text-[10px] font-bold tracking-[2px] mb-3 text-muted-foreground uppercase">
+          <div className="bg-card border border-border/50 rounded-xl card-shadow p-4 mb-6 text-left">
+            <div className="text-[10px] font-bold tracking-wide mb-3 text-muted-foreground uppercase">
               HOW IT WORKS
             </div>
-            <div className="space-y-2 text-[11px] tracking-[1px]">
+            <div className="space-y-2 text-[11px] tracking-wide">
               <div className="flex gap-2">
                 <span className="text-success">✓</span>
                 <span>Complete quests daily to earn <span className="font-bold">XP</span> and <span className="font-bold">Coins</span></span>
@@ -228,7 +228,7 @@ export function OnboardingView() {
           <div className="flex gap-2">
             <button
               onClick={() => setStep(1)}
-              className="px-4 py-3 border border-border text-[11px] tracking-[2px] uppercase bg-background hover:bg-muted"
+              className="px-4 py-3 border border-border text-[11px] tracking-wide uppercase bg-background hover:bg-muted"
             >
               ← BACK
             </button>

@@ -13,14 +13,14 @@ export function YearView() {
   const TK = dKey(new Date());
 
   return (
-    <div className="bg-card border border-border p-3 animate-in fade-in">
+    <div className="bg-card border border-border/50 rounded-xl card-shadow p-3 animate-in fade-in">
       <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
-        <div className="text-[11px] font-bold tracking-[2px] flex items-center gap-1.5">
+        <div className="text-[11px] font-bold tracking-wide flex items-center gap-1.5">
           YEARLY OVERVIEW
         </div>
         <div className="flex items-center gap-1.5 flex-wrap">
           <button 
-            className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-[1px] uppercase hover:bg-muted"
+            className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-wide uppercase hover:bg-muted"
             onClick={() => setYearDate(new Date(y - 1, 0, 1))}
           >
             ← PREV
@@ -29,13 +29,13 @@ export function YearView() {
             {y}
           </span>
           <button 
-            className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-[1px] uppercase hover:bg-muted"
+            className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-wide uppercase hover:bg-muted"
             onClick={() => setYearDate(new Date(y + 1, 0, 1))}
           >
             NEXT →
           </button>
           <button 
-            className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-[1px] uppercase hover:bg-muted"
+            className="px-2.5 py-1 border border-border bg-background text-[11px] tracking-wide uppercase hover:bg-muted"
             onClick={() => setYearDate(new Date())}
           >
             TODAY
@@ -48,7 +48,7 @@ export function YearView() {
           const cells = monthGrid(y, mi);
           return (
             <div key={mi} className="border border-border p-2.5">
-              <div className="text-[11px] font-bold tracking-[2px] mb-2 text-center uppercase">
+              <div className="text-[11px] font-bold tracking-wide mb-2 text-center uppercase">
                 {MONTHS_S[mi]}
               </div>
               <div className="grid grid-cols-[repeat(7,13px)] gap-0.5 justify-center">
@@ -86,7 +86,7 @@ export function YearView() {
         })}
       </div>
 
-      <div className="flex flex-wrap gap-3 mt-4 items-center text-[11px] text-muted-foreground tracking-[1px]">
+      <div className="flex flex-wrap gap-3 mt-4 items-center text-[11px] text-muted-foreground tracking-wide">
         <span>INTENSITY LEVEL:</span>
         {IL.map((l, i) => (
           <div key={l} className="flex items-center gap-1">

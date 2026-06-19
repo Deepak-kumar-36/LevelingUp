@@ -140,9 +140,9 @@ export function DashboardView() {
 
   return (
     <div className="animate-in fade-in">
-      <div className="bg-card border border-border p-3 mb-3 flex gap-5 items-center flex-wrap">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3 mb-3 flex gap-5 items-center flex-wrap">
         <div className="min-w-[55px]">
-          <div className="text-[11px] text-muted-foreground tracking-[1px]">RANK</div>
+          <div className="text-[11px] text-muted-foreground tracking-wide">RANK</div>
           <div className="text-[34px] font-bold tracking-[4px] leading-none">{rank.l}</div>
           {nextRank && (
             <div className="text-[9px] text-muted-foreground mt-0.5">
@@ -152,7 +152,7 @@ export function DashboardView() {
         </div>
         <div className="flex-1 min-w-[180px]">
           <div className="flex justify-between mb-1">
-            <span className="text-[11px] text-muted-foreground tracking-[1px]">XP</span>
+            <span className="text-[11px] text-muted-foreground tracking-wide">XP</span>
             <span className="text-[11px] text-muted-foreground">
               {data.user.totalXp.toLocaleString()} / {nextRank ? nextRank.min.toLocaleString() : 'MAX'}
             </span>
@@ -162,23 +162,23 @@ export function DashboardView() {
           </div>
         </div>
         <div className="text-center">
-          <div className="text-[11px] text-muted-foreground tracking-[1px]">STREAK</div>
+          <div className="text-[11px] text-muted-foreground tracking-wide">STREAK</div>
           <div className={`text-[22px] font-bold ${streak > 0 ? 'text-success' : 'text-foreground'}`}>🔥{streak}D</div>
         </div>
         <div className="text-center">
-          <div className="text-[11px] text-muted-foreground tracking-[1px]">COINS</div>
+          <div className="text-[11px] text-muted-foreground tracking-wide">COINS</div>
           <div className="text-[22px] font-bold">⚡{data.user.coins}</div>
         </div>
         <div className="text-center">
-          <div className="text-[11px] text-muted-foreground tracking-[1px]">TODAY</div>
+          <div className="text-[11px] text-muted-foreground tracking-wide">TODAY</div>
           <div className={`text-[22px] font-bold ${pct >= 70 ? 'text-success' : 'text-foreground'}`}>{pct}%</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-3">
         <div>
-          <div className="bg-card border border-border p-3 mb-3">
-            <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center justify-between">
+          <div className="bg-card border border-border/50 rounded-xl card-shadow p-3 mb-3">
+            <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 📋 TODAY'S QUESTS
                 <button 
@@ -200,7 +200,7 @@ export function DashboardView() {
                     value={qName} 
                     onChange={e => setQName(e.target.value)}
                     placeholder="QUEST NAME" 
-                    className="flex-1 bg-background border border-border p-1 text-[11px] outline-none tracking-[1px]"
+                    className="flex-1 bg-background border border-border p-1 text-[11px] outline-none tracking-wide"
                   />
                   <input 
                     value={qXp} 
@@ -221,7 +221,7 @@ export function DashboardView() {
                   <select
                     value={qStat}
                     onChange={e => setQStat(e.target.value)}
-                    className="flex-1 bg-background border border-border p-1 text-[11px] outline-none tracking-[1px] uppercase"
+                    className="flex-1 bg-background border border-border p-1 text-[11px] outline-none tracking-wide uppercase"
                   >
                     {STATS.map(s => (
                       <option key={s} value={s}>{SICON[s]} {s.toUpperCase()}</option>
@@ -230,7 +230,7 @@ export function DashboardView() {
                 </div>
                 <button 
                   onClick={addQuest}
-                  className="w-full bg-foreground text-background border border-foreground p-1 text-[10px] tracking-[2px] uppercase font-bold"
+                  className="w-full bg-foreground text-background border border-foreground p-1 text-[10px] tracking-wide uppercase font-bold"
                 >
                   ADD QUEST
                 </button>
@@ -248,10 +248,10 @@ export function DashboardView() {
                   <div className={`w-3.5 h-3.5 border border-border flex-shrink-0 flex items-center justify-center text-[10px] ${c ? 'bg-foreground text-background' : 'bg-background'}`}>
                     {c && '✓'}
                   </div>
-                  <div className={`flex-1 tracking-[1px] ${c ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+                  <div className={`flex-1 tracking-wide ${c ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                     {q.name}
                   </div>
-                  <div className="text-[11px] text-muted-foreground text-right leading-tight tracking-[1px]">
+                  <div className="text-[11px] text-muted-foreground text-right leading-tight tracking-wide">
                     <div>+{q.xp}XP</div>
                     <div>+{q.coins}⚡</div>
                   </div>
@@ -265,26 +265,26 @@ export function DashboardView() {
                 </div>
               );
             })}
-            <div className="mt-2 pt-1.5 border-t border-border text-[11px] text-muted-foreground flex justify-between tracking-[1px]">
+            <div className="mt-2 pt-1.5 border-t border-border text-[11px] text-muted-foreground flex justify-between tracking-wide">
               <span>{dc}/{myQuests.length} COMPLETE</span>
               <span>{pct >= 70 ? '✓ STREAK SAFE' : `⚠ NEED ${Math.max(0, Math.ceil(myQuests.length * 0.7) - dc)} MORE`}</span>
             </div>
           </div>
 
           {(data.backlogs ?? []).length > 0 && (
-            <div className="bg-card border border-border p-3 mb-3">
-              <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">
+            <div className="bg-card border border-border/50 rounded-xl card-shadow p-3 mb-3">
+              <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">
                 ⚠ BACKLOG ({(data.backlogs ?? []).length})
               </div>
               {(data.backlogs ?? []).map(b => (
                 <div key={b.id} className="flex items-center justify-between py-1.5 border-b border-border">
                   <div>
-                    <div className="tracking-[1px]">{b.name}</div>
+                    <div className="tracking-wide">{b.name}</div>
                     <div className="text-[11px] text-muted-foreground">+{b.xp} XP · +{b.coins} COINS</div>
                   </div>
                   <button 
                     onClick={() => clearBacklog(b.id)} 
-                    className="px-2 py-0.5 border border-border bg-background text-foreground text-[10px] tracking-[1px] uppercase hover:bg-muted"
+                    className="px-2 py-0.5 border border-border bg-background text-foreground text-[10px] tracking-wide uppercase hover:bg-muted"
                   >
                     CLEAR
                   </button>
@@ -295,8 +295,8 @@ export function DashboardView() {
         </div>
 
         <div>
-          <div className="bg-card border border-border p-3 mb-3">
-            <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">
+          <div className="bg-card border border-border/50 rounded-xl card-shadow p-3 mb-3">
+            <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">
               ⬡ CHARACTER STATS
             </div>
             {STATS.map(stat => {
@@ -305,7 +305,7 @@ export function DashboardView() {
               return (
                 <div key={stat} className="mb-2">
                   <div className="flex justify-between mb-[3px]">
-                    <span className="text-[11px] tracking-[1px]">{SICON[stat]} {stat.toUpperCase()}</span>
+                    <span className="text-[11px] tracking-wide">{SICON[stat]} {stat.toUpperCase()}</span>
                     <span className="text-[11px] font-bold">{val}</span>
                   </div>
                   <div className="h-[6px] bg-muted overflow-hidden">
@@ -316,8 +316,8 @@ export function DashboardView() {
             })}
           </div>
 
-          <div className="bg-card border border-border p-3">
-            <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center justify-between">
+          <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+            <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 WEEKLY GOALS
                 <button 
@@ -336,7 +336,7 @@ export function DashboardView() {
                     value={wName} 
                     onChange={e => setWName(e.target.value)}
                     placeholder="GOAL NAME" 
-                    className="flex-1 bg-background border border-border p-1 text-[11px] outline-none tracking-[1px]"
+                    className="flex-1 bg-background border border-border p-1 text-[11px] outline-none tracking-wide"
                   />
                   <input 
                     value={wTarget} 
@@ -354,7 +354,7 @@ export function DashboardView() {
                 </div>
                 <button 
                   onClick={addWeekly}
-                  className="w-full bg-foreground text-background border border-foreground p-1 text-[10px] tracking-[2px] uppercase font-bold"
+                  className="w-full bg-foreground text-background border border-foreground p-1 text-[10px] tracking-wide uppercase font-bold"
                 >
                   ADD GOAL
                 </button>
@@ -368,7 +368,7 @@ export function DashboardView() {
               return (
                 <div key={g.id} className="mb-2.5">
                   <div className="flex justify-between items-center mb-[3px]">
-                    <span className={`text-[11px] tracking-[1px] ${done ? 'text-success' : 'text-foreground'}`}>
+                    <span className={`text-[11px] tracking-wide ${done ? 'text-success' : 'text-foreground'}`}>
                       {done ? '✓ ' : ''}{g.name}
                     </span>
                     <div className="flex items-center gap-1">

@@ -88,19 +88,19 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
   return (
     <div className="animate-in fade-in grid grid-cols-1 md:grid-cols-2 gap-3">
       {/* Weight Card */}
-      <div className="bg-card border border-border p-3">
-        <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">⚖ WEIGHT TRACKING</div>
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
+        <div className="text-[11px] font-bold tracking-wide mb-2.5 flex items-center gap-1.5">⚖ WEIGHT TRACKING</div>
         <div className="flex flex-wrap gap-5 mb-2.5">
           <div>
-            <div className="text-[11px] text-muted-foreground tracking-[1px]">CURRENT</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide">CURRENT</div>
             <div className="font-bold text-[22px]">{(lastW ? lastW.weight : sw)} KG</div>
           </div>
           <div>
-            <div className="text-[11px] text-muted-foreground tracking-[1px]">TARGET</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide">TARGET</div>
             <div className="font-bold text-[22px]">{tw} KG</div>
           </div>
           <div>
-            <div className="text-[11px] text-muted-foreground tracking-[1px]">PROGRESS</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide">PROGRESS</div>
             <div className={`font-bold text-[22px] ${wPct >= 100 ? 'text-success' : 'text-foreground'}`}>{wPct}%</div>
           </div>
         </div>
@@ -110,12 +110,12 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
 
         {sortedW.length >= 2 && (
           <div className="mt-3">
-            <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1">WEIGHT HISTORY (LAST 14)</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide mb-1">WEIGHT HISTORY (LAST 14)</div>
             <WeightChart weights={sortedW.slice(-14)} />
           </div>
         )}
 
-        <div className="text-[11px] text-muted-foreground tracking-[1px] mt-3 mb-1.5">LOG WEIGHT (KG)</div>
+        <div className="text-[11px] text-muted-foreground tracking-wide mt-3 mb-1.5">LOG WEIGHT (KG)</div>
         <div className="flex items-center gap-2">
           <input 
             value={wIn} 
@@ -126,7 +126,7 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
           />
           <button 
             onClick={logW} 
-            className="bg-foreground text-background border border-foreground px-3 py-1.5 text-[11px] tracking-[1px] uppercase hover:opacity-90"
+            className="bg-foreground text-background border border-foreground px-3 py-1.5 text-[11px] tracking-wide uppercase hover:opacity-90"
           >
             LOG
           </button>
@@ -134,10 +134,10 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
 
         {sortedW.length > 0 && (
           <div className="mt-3">
-            <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1">RECENT ENTRIES</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide mb-1">RECENT ENTRIES</div>
             {[...sortedW].reverse().slice(0, 5).map(w => (
               <div key={w.id} className="flex justify-between py-[3px] border-b border-border text-[11px]">
-                <span className="text-muted-foreground tracking-[1px]">{w.date}</span>
+                <span className="text-muted-foreground tracking-wide">{w.date}</span>
                 <span className="font-bold">{w.weight} KG</span>
               </div>
             ))}
@@ -146,12 +146,12 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
       </div>
 
       {/* Nutrition Card */}
-      <div className="bg-card border border-border p-3">
+      <div className="bg-card border border-border/50 rounded-xl card-shadow p-3">
         <div className="flex justify-between items-center mb-2.5">
-          <div className="text-[11px] font-bold tracking-[2px] flex items-center gap-1.5">TODAY'S NUTRITION</div>
+          <div className="text-[11px] font-bold tracking-wide flex items-center gap-1.5">TODAY'S NUTRITION</div>
           <button 
             onClick={() => setShowDiet(!showDiet)}
-            className="text-[10px] tracking-[1px] border border-border px-2 py-0.5 hover:bg-muted uppercase transition-colors"
+            className="text-[10px] tracking-wide border border-border px-2 py-0.5 hover:bg-muted uppercase transition-colors"
           >
             {showDiet ? 'HIDE DIET PLAN' : 'DIET PLAN'}
           </button>
@@ -159,7 +159,7 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
         
         {showDiet && (
           <div className="mb-4 bg-background border border-border p-3 text-[11px] leading-[1.6]">
-            <div className="font-bold tracking-[2px] mb-2 text-foreground">MUSCLE GAIN DIET PLAN (BUDGET)</div>
+            <div className="font-bold tracking-wide mb-2 text-foreground">MUSCLE GAIN DIET PLAN (BUDGET)</div>
             <ul className="text-muted-foreground space-y-1.5 list-none">
               <li><span className="text-foreground">1. Wake Up:</span> Soaked Chane + Soyabean + Peanuts</li>
               <li><span className="text-foreground">2. Breakfast:</span> Banana Shake + Oats + Dry Fruits + 1 Spoon Peanut Butter</li>
@@ -178,7 +178,7 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
 
         <div className="mb-3">
           <div className="flex justify-between mb-[3px]">
-            <span className="text-[11px] tracking-[1px]">CALORIES</span>
+            <span className="text-[11px] tracking-wide">CALORIES</span>
             <span className={`text-[11px] font-bold ${calPct >= 100 ? 'text-success' : 'text-foreground'}`}>
               {totCal} / {tgt.calories} KCAL
             </span>
@@ -190,7 +190,7 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
 
         <div className="mb-4">
           <div className="flex justify-between mb-[3px]">
-            <span className="text-[11px] tracking-[1px]">PROTEIN</span>
+            <span className="text-[11px] tracking-wide">PROTEIN</span>
             <span className={`text-[11px] font-bold ${proPct >= 100 ? 'text-success' : 'text-foreground'}`}>
               {totPro} / {tgt.protein} G
             </span>
@@ -200,12 +200,12 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
           </div>
         </div>
 
-        <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1.5">LOG FOOD</div>
+        <div className="text-[11px] text-muted-foreground tracking-wide mb-1.5">LOG FOOD</div>
         <input 
           value={fName} 
           onChange={e => setFName(e.target.value)} 
           placeholder="FOOD NAME"
-          className="w-full bg-background border border-border p-1.5 mb-1.5 text-[11px] outline-none text-foreground tracking-[1px]"
+          className="w-full bg-background border border-border p-1.5 mb-1.5 text-[11px] outline-none text-foreground tracking-wide"
         />
         <div className="flex gap-1.5 mb-2.5 items-center">
           <input 
@@ -213,18 +213,18 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
             onChange={e => setFCal(e.target.value)} 
             placeholder="KCAL" 
             type="number"
-            className="flex-1 bg-background border border-border p-1.5 text-[11px] outline-none text-foreground tracking-[1px] min-w-0"
+            className="flex-1 bg-background border border-border p-1.5 text-[11px] outline-none text-foreground tracking-wide min-w-0"
           />
           <input 
             value={fPro} 
             onChange={e => setFPro(e.target.value)} 
             placeholder="PROTEIN (G)" 
             type="number"
-            className="flex-1 bg-background border border-border p-1.5 text-[11px] outline-none text-foreground tracking-[1px] min-w-0"
+            className="flex-1 bg-background border border-border p-1.5 text-[11px] outline-none text-foreground tracking-wide min-w-0"
           />
           <button 
             onClick={logF} 
-            className="bg-foreground text-background border border-foreground px-3 py-1.5 text-[11px] tracking-[1px] uppercase hover:opacity-90"
+            className="bg-foreground text-background border border-foreground px-3 py-1.5 text-[11px] tracking-wide uppercase hover:opacity-90"
           >
             LOG
           </button>
@@ -232,10 +232,10 @@ export function HealthView({ toast }: { toast: (msg: string) => void }) {
 
         {todayFood.length > 0 && (
           <div className="border-t border-border pt-2 mt-2">
-            <div className="text-[11px] text-muted-foreground tracking-[1px] mb-1.5">TODAY'S FOOD LOG</div>
+            <div className="text-[11px] text-muted-foreground tracking-wide mb-1.5">TODAY'S FOOD LOG</div>
             {todayFood.map((f: any) => (
               <div key={f.id} className="flex items-center justify-between py-1 border-b border-border text-[11px]">
-                <span className="tracking-[1px] uppercase">{f.foodName}</span>
+                <span className="tracking-wide uppercase">{f.foodName}</span>
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">{f.calories}kcal · {f.protein}g prot</span>
                   <button onClick={() => delF(f.id)} className="px-1.5 py-[1px] border border-border bg-background text-[9px] hover:bg-muted">✕</button>
