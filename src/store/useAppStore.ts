@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { db } from '../database/db';
 import { INIT } from '../lib/html-constants';
+import { checkAchievements } from '../services/AchievementService';
 
 export const dKey = (d: Date) => `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
 export const getInten = (done: number, total: number) => { if (!done || !total) return 0; const p = done / total; return p < .35 ? 1 : p < .70 ? 2 : 3; };
@@ -42,7 +43,14 @@ export const useAppStore = create<AppState>((set, get) => ({
   data: INIT,
   setData: (updater) => {
     const prev = get().data;
-    const next = typeof updater === 'function' ? updater(prev) : updater;
+    let next = typeof updater === 'function' ? updater(prev) : updater;
+    
+    // Automatically check achievements on state updates
+    if (next.setupDone) {
+      const result = checkAchievements(next);
+      next = result.newData;
+    }
+
     set({ data: next });
     get().saveToDb(next);
   },

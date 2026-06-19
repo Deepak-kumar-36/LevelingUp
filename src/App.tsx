@@ -10,6 +10,7 @@ import { FinanceView } from './features/finance/FinanceView';
 import { StatsView } from './features/stats/StatsView';
 import { ShopView } from './features/shop/ShopView';
 import { BossView } from './features/bosses/BossView';
+import { AchievementsView } from './features/achievements/AchievementsView';
 import { OnboardingView } from './features/onboarding/OnboardingView';
 import { SettingsView } from './features/settings/SettingsView';
 
@@ -64,6 +65,22 @@ export default function App() {
     }
   }, [isReady, data.setupDone]);
 
+  // Achievement toast queue
+  useEffect(() => {
+    if (data.achievementQueue && data.achievementQueue.length > 0) {
+      // Create a copy of the queue to toast
+      const msgs = [...data.achievementQueue];
+      
+      // Toast each message with a small delay between them
+      msgs.forEach((msg, i) => {
+        setTimeout(() => toast(msg), i * 3000);
+      });
+      
+      // Clear the queue in state
+      setData(d => ({ ...d, achievementQueue: [] }));
+    }
+  }, [data.achievementQueue]);
+
   if (!isReady) return null;
 
   if (!data.setupDone) {
@@ -78,6 +95,7 @@ export default function App() {
     { id: 'health', label: 'HEALTH' },
     { id: 'finance', label: 'FINANCE' },
     { id: 'stats', label: 'STATS' },
+    { id: 'awards', label: 'AWARDS' },
     { id: 'shop', label: 'SHOP' },
     { id: 'bosses', label: 'BOSSES' },
     { id: 'settings', label: '⚙' }
@@ -128,6 +146,7 @@ export default function App() {
         {view === 'health' && <HealthView toast={toast} />}
         {view === 'finance' && <FinanceView toast={toast} />}
         {view === 'stats' && <StatsView />}
+        {view === 'awards' && <AchievementsView />}
         {view === 'shop' && <ShopView toast={toast} />}
         {view === 'bosses' && <BossView toast={toast} />}
         {view === 'settings' && <SettingsView toast={toast} />}

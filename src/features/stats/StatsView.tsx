@@ -1,6 +1,7 @@
 import { useAppStore, calcStreak } from '../../store/useAppStore';
 import { QUESTS, STATS, SICON, DAYS } from '../../lib/html-constants';
 import { useMemo } from 'react';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 
 export function StatsView() {
   const { data } = useAppStore();
@@ -26,6 +27,27 @@ export function StatsView() {
       if (dd.quests.includes(q.id)) dow[i].qc[qi]++;
     });
   });
+
+  // Calculate daily XP for chart
+  const xpData = useMemo(() => {
+    const chartData = [];
+    const d = new Date();
+    d.setDate(d.getDate() - 14); // Last 14 days
+    for (let i = 0; i < 14; i++) {
+      const k = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+      const dd = data.dayData?.[k] || { quests: [] };
+      const xp = dd.quests.reduce((sum: number, qid: string) => {
+        const quest = myQuests.find((q: any) => q.id === qid);
+        return sum + (quest?.xp || 0);
+      }, 0);
+      chartData.push({
+        date: `${d.getMonth() + 1}/${d.getDate()}`,
+        xp
+      });
+      d.setDate(d.getDate() + 1);
+    }
+    return chartData;
+  }, [data.dayData, myQuests]);
 
   return (
     <div className="animate-in fade-in flex flex-col gap-3">
@@ -76,6 +98,30 @@ export function StatsView() {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      <div className="bg-card border border-border p-3">
+        <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">📈 XP GAINS (LAST 14 DAYS)</div>
+        <div className="h-[120px] w-full -ml-4">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={xpData}>
+              <defs>
+                <linearGradient id="colorXp" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="currentColor" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="currentColor" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="date" hide />
+              <YAxis hide />
+              <Tooltip 
+                contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', fontSize: '11px', textTransform: 'uppercase', borderRadius: '0' }}
+                itemStyle={{ color: 'hsl(var(--foreground))' }}
+                cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1, strokeDasharray: '4 4' }}
+              />
+              <Area type="monotone" dataKey="xp" stroke="hsl(var(--foreground))" strokeWidth={2} fillOpacity={1} fill="url(#colorXp)" />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

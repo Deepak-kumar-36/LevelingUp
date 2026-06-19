@@ -53,6 +53,17 @@ export const DEFAULT_BOSSES = [
   { id: 'b5', name: 'Titanus Lxxv', title: 'The 75 Hard Titan', maxHp: 7500, hp: 7500, xpReward: 50000, coinReward: 5000, actionDesc: 'Flawless Daily Quests', damage: 100 }
 ];
 
+export const ACHIEVEMENTS = [
+  { id: 'first_blood', name: 'FIRST BLOOD', desc: 'Complete your first quest', xpReward: 100 },
+  { id: 'streak_7', name: '7-DAY STREAK', desc: 'Maintain a 7-day streak', xpReward: 500 },
+  { id: 'streak_30', name: '30-DAY STREAK', desc: 'Maintain a 30-day streak', xpReward: 2000 },
+  { id: 'boss_slayer', name: 'BOSS SLAYER', desc: 'Defeat your first boss', xpReward: 1000 },
+  { id: 'xp_1k', name: 'NOVICE HUNTER', desc: 'Earn 1,000 total XP', xpReward: 200 },
+  { id: 'xp_10k', name: 'ADEPT HUNTER', desc: 'Earn 10,000 total XP', xpReward: 1000 },
+  { id: 'rank_s', name: 'S-CLASS HUNTER', desc: 'Reach S-Rank', xpReward: 5000 },
+  { id: 'shopaholic', name: 'SHOPAHOLIC', desc: 'Redeem 10 items from the shop', xpReward: 500 },
+];
+
 export const INIT = {
   setupDone: false,
   user: {
@@ -70,4 +81,6 @@ export const INIT = {
   finance: { expenses: [] as any[], monthlyBudget: 5000 },
   bosses: DEFAULT_BOSSES as any[],
   lastBacklogCheck: null as string | null,
+  achievements: [] as string[],
+  achievementQueue: [] as string[],
 };
