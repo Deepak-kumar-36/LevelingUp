@@ -10,11 +10,12 @@ import { FinanceView } from './features/finance/FinanceView';
 import { StatsView } from './features/stats/StatsView';
 import { ShopView } from './features/shop/ShopView';
 import { BossView } from './features/bosses/BossView';
+import { OnboardingView } from './features/onboarding/OnboardingView';
+import { SettingsView } from './features/settings/SettingsView';
 
 export default function App() {
   const { isReady, loadFromDb, data, setData } = useAppStore();
   const [view, setView] = useState('dash');
-  const [setupName, setSetupName] = useState('DEEPAK');
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const myQuests = data?.quests ?? DEF_QUESTS;
@@ -66,25 +67,7 @@ export default function App() {
   if (!isReady) return null;
 
   if (!data.setupDone) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-        <h1 className="text-2xl font-bold tracking-[3px] mb-8 uppercase">Initialize Protocol</h1>
-        <div className="max-w-md w-full bg-card border border-border p-6">
-          <div className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Hunter Designation</div>
-          <input
-            value={setupName}
-            onChange={e => setSetupName(e.target.value)}
-            className="w-full bg-background border border-border p-2 mb-6 font-mono text-sm outline-none text-foreground"
-          />
-          <button
-            onClick={() => setData(d => ({ ...d, setupDone: true, user: { ...d.user, name: setupName.toUpperCase() } }))}
-            className="w-full bg-foreground text-background border border-foreground p-3 font-bold tracking-widest uppercase hover:opacity-90"
-          >
-            Begin
-          </button>
-        </div>
-      </div>
-    );
+    return <OnboardingView />;
   }
 
   const navs = [
@@ -96,7 +79,8 @@ export default function App() {
     { id: 'finance', label: 'FINANCE' },
     { id: 'stats', label: 'STATS' },
     { id: 'shop', label: 'SHOP' },
-    { id: 'bosses', label: 'BOSSES' }
+    { id: 'bosses', label: 'BOSSES' },
+    { id: 'settings', label: '⚙' }
   ];
 
   return (
@@ -146,6 +130,7 @@ export default function App() {
         {view === 'stats' && <StatsView />}
         {view === 'shop' && <ShopView toast={toast} />}
         {view === 'bosses' && <BossView toast={toast} />}
+        {view === 'settings' && <SettingsView toast={toast} />}
       </div>
 
       {/* Toast Notification */}

@@ -25,6 +25,7 @@ export function DashboardView() {
   const [qName, setQName] = useState('');
   const [qXp, setQXp] = useState('10');
   const [qCoins, setQCoins] = useState('2');
+  const [qStat, setQStat] = useState('discipline');
 
   const [showAddWeekly, setShowAddWeekly] = useState(false);
   const [wName, setWName] = useState('');
@@ -90,7 +91,7 @@ export function DashboardView() {
         name: qName.trim().toUpperCase(),
         xp: parseInt(qXp) || 10,
         coins: parseInt(qCoins) || 2,
-        gains: {}
+        gains: { [qStat]: 1 }
       } as any;
       return { ...d, quests: [...qs, newQ] };
     });
@@ -112,6 +113,20 @@ export function DashboardView() {
     });
     setWName('');
     setShowAddWeekly(false);
+  };
+
+  const deleteQuest = (qid: string) => {
+    setData(d => ({
+      ...d,
+      quests: (d.quests ?? DEF_QUESTS).filter((q: any) => q.id !== qid)
+    }));
+  };
+
+  const deleteWeekly = (wid: string) => {
+    setData(d => ({
+      ...d,
+      weekly: (d.weekly ?? DEF_WEEKLY).filter((w: any) => w.id !== wid)
+    }));
   };
 
   const dc = todayData.quests.length;
@@ -196,6 +211,17 @@ export function DashboardView() {
                     className="w-[60px] bg-background border border-border p-1 text-[11px] outline-none"
                   />
                 </div>
+                <div className="flex gap-2 mb-2">
+                  <select
+                    value={qStat}
+                    onChange={e => setQStat(e.target.value)}
+                    className="flex-1 bg-background border border-border p-1 text-[11px] outline-none tracking-[1px] uppercase"
+                  >
+                    {STATS.map(s => (
+                      <option key={s} value={s}>{SICON[s]} {s.toUpperCase()}</option>
+                    ))}
+                  </select>
+                </div>
                 <button 
                   onClick={addQuest}
                   className="w-full bg-foreground text-background border border-foreground p-1 text-[10px] tracking-[2px] uppercase font-bold"
@@ -223,6 +249,13 @@ export function DashboardView() {
                     <div>+{q.xp}XP</div>
                     <div>+{q.coins}⚡</div>
                   </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteQuest(q.id); }}
+                    className="ml-1 px-1 text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+                    title="Delete quest"
+                  >
+                    ✕
+                  </button>
                 </div>
               );
             })}
@@ -336,6 +369,13 @@ export function DashboardView() {
                       <button onClick={() => adjWeekly(g.id, -1)} className="px-2 border border-border bg-background text-[14px] leading-none py-0.5 hover:bg-muted">−</button>
                       <span className="text-[11px] min-w-[30px] text-center">{cur}/{g.target}</span>
                       <button onClick={() => adjWeekly(g.id, 1)} className="px-2 border border-border bg-background text-[14px] leading-none py-0.5 hover:bg-muted">+</button>
+                      <button
+                        onClick={() => deleteWeekly(g.id)}
+                        className="px-1 text-[10px] text-muted-foreground hover:text-destructive transition-colors ml-1"
+                        title="Delete goal"
+                      >
+                        ✕
+                      </button>
                     </div>
                   </div>
                   <div className="h-[5px] bg-muted overflow-hidden">
