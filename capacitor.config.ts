@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.levelingup.app',
-  appName: 'MINIMAL',
+  appName: 'LevelingUp',
   webDir: 'dist',
 };
 

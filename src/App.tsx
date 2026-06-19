@@ -105,13 +105,16 @@ export default function App() {
       <div className="sticky top-0 z-50 flex flex-col gap-2 p-2 md:p-3 pt-[max(env(safe-area-inset-top),0.5rem)] md:pt-3 bg-background border-b border-border">
         {/* Header Row */}
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <svg width="24" height="24" viewBox="0 0 1024 1024" className="text-foreground">
               <g transform="translate(0, 0)">
                 <path d="M 250 800 L 380 800 L 512 600 L 644 800 L 774 800 L 512 350 Z" fill="currentColor" />
                 <path d="M 512 470 L 350 730 L 430 730 L 512 600 L 594 730 L 674 730 Z" fill="currentColor" />
               </g>
             </svg>
+            <div className="font-bold text-[13px] tracking-[3px]">
+              &gt;_ LEVELING UP
+            </div>
           </div>
           <div className="px-3 py-1 border border-border text-[11px] tracking-[1px] flex items-center gap-1 bg-background whitespace-nowrap">
             <span className="text-success">●</span> {getRank(data?.user?.totalXp ?? 0).l} | {data?.user?.name || 'USER'}
