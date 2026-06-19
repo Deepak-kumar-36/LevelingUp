@@ -1,38 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #111111;
-  --color-background-alt: #1a1a1a;
-  --color-foreground: #eeeeee;
+  --color-background: #f8fafc;
+  --color-background-alt: #f1f5f9;
+  --color-foreground: #0f172a;
   
-  --color-card: #1a1a1a;
-  --color-card-foreground: #eeeeee;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
   
-  --color-popover: #1a1a1a;
-  --color-popover-foreground: #eeeeee;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
   
-  --color-primary: #eeeeee;
-  --color-primary-foreground: #111111;
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #ffffff;
   
-  --color-secondary: #333333;
-  --color-secondary-foreground: #eeeeee;
+  --color-secondary: #e2e8f0;
+  --color-secondary-foreground: #0f172a;
   
-  --color-muted: #333333;
-  --color-muted-foreground: #aaaaaa;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
   
-  --color-accent: #333333;
-  --color-accent-foreground: #eeeeee;
+  --color-accent: #eff6ff;
+  --color-accent-foreground: #2563eb;
   
-  --color-destructive: #cc0000;
-  --color-destructive-foreground: #eeeeee;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
   
-  --color-success: #16a34a;
-  --color-success-alt: #4ade80;
+  --color-success: #10b981;
+  --color-success-alt: #34d399;
   
-  --color-border: #333333;
-  --color-input: #333333;
-  --color-ring: #aaaaaa;
-  --radius: 0rem;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #3b82f6;
+  --radius: 0.75rem;
 }
 
 @layer base {
@@ -44,8 +44,8 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
     min-height: 100vh;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
@@ -54,14 +54,14 @@
   }
 
   button {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Inter', sans-serif;
     cursor: pointer;
   }
 
   input,
   textarea,
   select {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Inter', sans-serif;
     outline: none;
     -webkit-user-select: auto;
     user-select: auto;
@@ -77,11 +77,12 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #111;
+    background: var(--color-background-alt);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #555;
+    background: var(--color-muted-foreground);
+    border-radius: 4px;
   }
 }
 
@@ -90,59 +91,86 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Themes */
 .theme-default {
-  /* Inherits from @theme */
+  /* Inherits from @theme (Light Mode) */
 }
 
-.theme-blood {
-  --color-background: #0a0000;
-  --color-background-alt: #140000;
-  --color-foreground: #ff3333;
-  --color-card: #140000;
-  --color-card-foreground: #ff3333;
-  --color-popover: #140000;
-  --color-popover-foreground: #ff3333;
-  --color-primary: #ff3333;
-  --color-primary-foreground: #0a0000;
-  --color-secondary: #330000;
-  --color-secondary-foreground: #ff3333;
-  --color-muted: #330000;
-  --color-muted-foreground: #aa3333;
-  --color-accent: #330000;
-  --color-accent-foreground: #ff3333;
-  --color-border: #330000;
-  --color-success: #ff3333;
-  --color-success-alt: #ff6666;
+.theme-dark {
+  --color-background: #0f172a;
+  --color-background-alt: #1e293b;
+  --color-foreground: #f8fafc;
+  --color-card: #1e293b;
+  --color-card-foreground: #f8fafc;
+  --color-popover: #1e293b;
+  --color-popover-foreground: #f8fafc;
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #334155;
+  --color-secondary-foreground: #f8fafc;
+  --color-muted: #334155;
+  --color-muted-foreground: #94a3b8;
+  --color-accent: #1e293b;
+  --color-accent-foreground: #3b82f6;
+  --color-border: #334155;
+  --color-success: #10b981;
+  --color-success-alt: #34d399;
+  --color-destructive: #ef4444;
 }
 
-.theme-matrix {
-  --color-background: #000a00;
-  --color-background-alt: #001400;
-  --color-foreground: #33ff33;
-  --color-card: #001400;
-  --color-card-foreground: #33ff33;
-  --color-popover: #001400;
-  --color-popover-foreground: #33ff33;
-  --color-primary: #33ff33;
-  --color-primary-foreground: #000a00;
-  --color-secondary: #003300;
-  --color-secondary-foreground: #33ff33;
-  --color-muted: #003300;
-  --color-muted-foreground: #33aa33;
-  --color-accent: #003300;
-  --color-accent-foreground: #33ff33;
-  --color-border: #003300;
-  --color-success: #33ff33;
-  --color-success-alt: #66ff66;
-  --color-destructive: #ff3333;
+.theme-sakura {
+  --color-background: #fff5f8;
+  --color-background-alt: #ffe4e6;
+  --color-foreground: #881337;
+  --color-card: #ffffff;
+  --color-card-foreground: #881337;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #881337;
+  --color-primary: #be123c;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #ffe4e6;
+  --color-secondary-foreground: #be123c;
+  --color-muted: #ffe4e6;
+  --color-muted-foreground: #fb7185;
+  --color-accent: #fecdd3;
+  --color-accent-foreground: #be123c;
+  --color-border: #fecdd3;
+  --color-success: #10b981;
+  --color-success-alt: #34d399;
+  --color-destructive: #e11d48;
 }
 
+.theme-ocean {
+  --color-background: #f0fdf4;
+  --color-background-alt: #dcfce7;
+  --color-foreground: #064e3b;
+  --color-card: #ffffff;
+  --color-card-foreground: #064e3b;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #064e3b;
+  --color-primary: #059669;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #d1fae5;
+  --color-secondary-foreground: #059669;
+  --color-muted: #d1fae5;
+  --color-muted-foreground: #34d399;
+  --color-accent: #a7f3d0;
+  --color-accent-foreground: #059669;
+  --color-border: #a7f3d0;
+  --color-success: #10b981;
+  --color-success-alt: #34d399;
+  --color-destructive: #ef4444;
+}
+
+/* Base Styles */
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.theme-dark .card-shadow {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+}

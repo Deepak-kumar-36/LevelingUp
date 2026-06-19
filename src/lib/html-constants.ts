@@ -43,9 +43,10 @@ export const EQUIPMENT_ITEMS = [
 ];
 
 export const THEMES = [
-  { id: 'theme-default', name: 'Monochrome (Default)', cost: 0 },
-  { id: 'theme-blood', name: 'Blood Moon', cost: 5000 },
-  { id: 'theme-matrix', name: 'The Matrix', cost: 5000 }
+  { id: 'theme-default', name: 'Light Mode (Default)', cost: 0 },
+  { id: 'theme-dark', name: 'Dark Mode', cost: 1000 },
+  { id: 'theme-sakura', name: 'Sakura Blossom', cost: 5000 },
+  { id: 'theme-ocean', name: 'Ocean Breeze', cost: 5000 }
 ];
 
 export const EXP_CATS = ['FOOD', 'TRAVEL', 'COLLEGE', 'ENTERTAIN', 'MISC'];
