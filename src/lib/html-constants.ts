@@ -27,12 +27,19 @@ export const RANKS = [
 ];
 
 export const SHOP = [
-  { id: 'choc', name: 'CHOCOLATE', cost: 150, desc: 'A sweet self-reward.' },
-  { id: 'coff', name: 'SPECIAL COFFEE', cost: 200, desc: 'Treat yourself, Hunter.' },
-  { id: 'movie', name: 'MOVIE NIGHT', cost: 500, desc: 'A well-earned break.' },
-  { id: 'rest', name: 'ORDER SOMETHING', cost: 700, desc: 'Dine out, no guilt.' },
-  { id: 'cheat', name: 'CHEAT MEAL', cost: 1000, desc: 'Earn it, enjoy it.' },
-  { id: 'skip', name: 'SKIP PASS', cost: 1200, desc: 'Protect your streak once.' },
+  { id: 's1', name: 'Coffee Break', cost: 10, desc: 'Take a 15min break guilt-free' },
+  { id: 's2', name: 'Gaming Hour', cost: 50, desc: '1 hour of gaming time' },
+  { id: 's3', name: 'Cheat Meal', cost: 100, desc: 'One guilt-free cheat meal' },
+  { id: 's4', name: 'Movie Night', cost: 200, desc: 'Watch a movie of your choice' },
+  { id: 's5', name: 'Rest Day', cost: 500, desc: 'Take a full day off from all quests' }
+];
+
+export const EQUIPMENT_ITEMS = [
+  { id: 'eq_sword_1', name: 'Iron Sword', slot: 'weapon', cost: 200, stats: { builder: 1, vitality: 1 }, desc: 'A basic iron sword.' },
+  { id: 'eq_sword_2', name: 'Obsidian Blade', slot: 'weapon', cost: 1000, stats: { builder: 3, vitality: 2 }, desc: 'Forged in the dark depths.' },
+  { id: 'eq_hat_1', name: 'Scholar Hat', slot: 'head', cost: 200, stats: { intelligence: 2 }, desc: 'Increases your mental capacity.' },
+  { id: 'eq_armor_1', name: 'Leather Tunic', slot: 'body', cost: 250, stats: { vitality: 2 }, desc: 'Basic protection for the body.' },
+  { id: 'eq_ring_1', name: 'Ring of Focus', slot: 'accessory', cost: 500, stats: { discipline: 3 }, desc: 'Keeps your mind sharp.' }
 ];
 
 export const EXP_CATS = ['FOOD', 'TRAVEL', 'COLLEGE', 'ENTERTAIN', 'MISC'];
@@ -83,4 +90,11 @@ export const INIT = {
   lastBacklogCheck: null as string | null,
   achievements: [] as string[],
   achievementQueue: [] as string[],
+  inventory: [] as string[],
+  equipped: {
+    head: null as string | null,
+    body: null as string | null,
+    weapon: null as string | null,
+    accessory: null as string | null,
+  }
 };

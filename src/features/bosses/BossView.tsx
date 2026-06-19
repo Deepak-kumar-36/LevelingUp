@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
+import { EQUIPMENT_ITEMS } from '../../lib/html-constants';
 
 export function BossView({ toast }: { toast: (msg: string) => void }) {
   const { data, setData } = useAppStore();
@@ -50,16 +51,39 @@ export function BossView({ toast }: { toast: (msg: string) => void }) {
       let xpGained = 0;
       let coinsGained = 0;
 
+      const newBosses = [...bList];
+      const prevTotal = d.user?.totalXp || 0;
+
       if (updatedBoss.hp <= 0) {
         xpGained = updatedBoss.xpReward;
         coinsGained = updatedBoss.coinReward;
         updatedBoss.hp = updatedBoss.maxHp; // Respawn
+
+        // 30% chance for an equipment drop
+        if (Math.random() < 0.3) {
+          const unownedEquipment = EQUIPMENT_ITEMS.filter(eq => !(d.inventory || []).includes(eq.id));
+          if (unownedEquipment.length > 0) {
+            const randomDrop = unownedEquipment[Math.floor(Math.random() * unownedEquipment.length)];
+            
+            // Queue the drop notification
+            const achievementMsg = `🎁 LOOT DROP! You obtained: ${randomDrop.name}`;
+            
+            return {
+              ...d,
+              bosses: newBosses,
+              inventory: [...(d.inventory || []), randomDrop.id],
+              achievementQueue: [...(d.achievementQueue || []), achievementMsg],
+              user: {
+                ...d.user,
+                totalXp: prevTotal + xpGained,
+                coins: (d.user?.coins || 0) + coinsGained,
+              }
+            };
+          }
+        }
       }
 
-      const newBosses = [...bList];
       newBosses[idx] = updatedBoss;
-
-      const prevTotal = d.user?.totalXp || 0;
 
       return {
         ...d,

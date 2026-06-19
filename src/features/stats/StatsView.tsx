@@ -1,5 +1,5 @@
 import { useAppStore, calcStreak } from '../../store/useAppStore';
-import { QUESTS, STATS, SICON, DAYS } from '../../lib/html-constants';
+import { QUESTS, STATS, SICON, DAYS, EQUIPMENT_ITEMS } from '../../lib/html-constants';
 import { useMemo } from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 
@@ -49,6 +49,20 @@ export function StatsView() {
     return chartData;
   }, [data.dayData, myQuests]);
 
+  const bonusStats = useMemo(() => {
+    const bonuses = { intelligence: 0, builder: 0, discipline: 0, vitality: 0, wealth: 0 };
+    const eqIds = [data.equipped?.head, data.equipped?.body, data.equipped?.weapon, data.equipped?.accessory];
+    eqIds.forEach(id => {
+      const item = EQUIPMENT_ITEMS.find(e => e.id === id);
+      if (item && item.stats) {
+        Object.entries(item.stats).forEach(([k, v]) => {
+          if (k in bonuses) bonuses[k as keyof typeof bonuses] += v;
+        });
+      }
+    });
+    return bonuses;
+  }, [data.equipped]);
+
   return (
     <div className="animate-in fade-in flex flex-col gap-3">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -85,15 +99,19 @@ export function StatsView() {
           <div className="text-[11px] font-bold tracking-[2px] mb-2.5 flex items-center gap-1.5">⬡ CHARACTER STATS</div>
           {STATS.map(stat => {
             const val = data.user.stats[stat as keyof typeof data.user.stats];
-            const pct = Math.min(100, val / 2);
+            const bonus = bonusStats[stat as keyof typeof bonusStats];
+
             return (
               <div key={stat} className="mb-2">
                 <div className="flex justify-between mb-0.5">
                   <span className="text-[11px] tracking-[1px]">{SICON[stat]} {stat.toUpperCase()}</span>
-                  <span className="text-[11px] font-bold">{val}</span>
+                  <span className="text-[11px] font-bold">
+                    {val} {bonus > 0 && <span className="text-success ml-1">+{bonus}</span>}
+                  </span>
                 </div>
-                <div className="h-[5px] bg-muted overflow-hidden">
-                  <div className="h-full bg-foreground transition-all duration-300" style={{ width: `${Math.max(0, pct)}%` }} />
+                <div className="h-[5px] bg-muted overflow-hidden flex">
+                  <div className="h-full bg-foreground transition-all duration-300" style={{ width: `${Math.max(0, Math.min(100, val / 2))}%` }} />
+                  {bonus > 0 && <div className="h-full bg-success transition-all duration-300" style={{ width: `${Math.max(0, Math.min(100, bonus / 2))}%` }} />}
                 </div>
               </div>
             );

@@ -9,6 +9,7 @@ import { HealthView } from './features/health/HealthView';
 import { FinanceView } from './features/finance/FinanceView';
 import { StatsView } from './features/stats/StatsView';
 import { ShopView } from './features/shop/ShopView';
+import { InventoryView } from './features/inventory/InventoryView';
 import { BossView } from './features/bosses/BossView';
 import { AchievementsView } from './features/achievements/AchievementsView';
 import { OnboardingView } from './features/onboarding/OnboardingView';
@@ -96,6 +97,7 @@ export default function App() {
     { id: 'finance', label: 'FINANCE' },
     { id: 'stats', label: 'STATS' },
     { id: 'awards', label: 'AWARDS' },
+    { id: 'inventory', label: 'INVENTORY' },
     { id: 'shop', label: 'SHOP' },
     { id: 'bosses', label: 'BOSSES' },
     { id: 'settings', label: '⚙' }
@@ -147,6 +149,7 @@ export default function App() {
         {view === 'finance' && <FinanceView toast={toast} />}
         {view === 'stats' && <StatsView />}
         {view === 'awards' && <AchievementsView />}
+        {view === 'inventory' && <InventoryView toast={toast} />}
         {view === 'shop' && <ShopView toast={toast} />}
         {view === 'bosses' && <BossView toast={toast} />}
         {view === 'settings' && <SettingsView toast={toast} />}
