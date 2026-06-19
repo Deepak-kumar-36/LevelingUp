@@ -1,28 +1,26 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
   <rect width="1024" height="1024" fill="#111111" />
   
-  <g transform="translate(0, -50)">
+  <g transform="translate(0, 0)">
     <!-- Outer Chevron -->
     <!-- Start at bottom left, go right, go up to inner peak, go down to right, go right, go up to main peak, go down to left -->
-    <path d="M 250 750 
-             L 380 750 
-             L 512 550 
-             L 644 750 
-             L 774 750 
-             L 512 300 
+    <path d="M 250 800 
+             L 380 800 
+             L 512 600 
+             L 644 800 
+             L 774 800 
+             L 512 350 
              Z" 
           fill="#ffffff" />
 
     <!-- Inner Chevron -->
-    <path d="M 512 420 
-             L 350 680 
-             L 430 680
-             L 512 550
-             L 594 680
-             L 674 680
+    <path d="M 512 470 
+             L 350 730 
+             L 430 730
+             L 512 600
+             L 594 730
+             L 674 730
              Z" 
           fill="#ffffff" />
   </g>
-
-  <text x="512" y="880" font-family="monospace, sans-serif" font-size="60" fill="#ffffff" font-weight="bold" text-anchor="middle" letter-spacing="15">MINIMAL</text>
 </svg>
