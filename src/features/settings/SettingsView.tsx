@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { INIT } from '../../lib/html-constants';
+import { INIT, THEMES } from '../../lib/html-constants';
+import { vibrateSuccess, vibrateError, vibrateLight } from '../../lib/haptics';
 
 export function SettingsView({ toast }: { toast: (msg: string) => void }) {
   const { data, setData } = useAppStore();
@@ -60,6 +61,29 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
     return sum + Math.floor(totalDamageDealt / b.maxHp);
   }, 0);
 
+  const purchaseTheme = (themeId: string, cost: number) => {
+    setData(d => {
+      if (d.user.coins < cost) {
+        vibrateError();
+        toast('✗ INSUFFICIENT COINS');
+        return d;
+      }
+      vibrateSuccess();
+      toast('✓ THEME UNLOCKED');
+      return {
+        ...d,
+        user: { ...d.user, coins: d.user.coins - cost },
+        unlockedThemes: [...(d.unlockedThemes || []), themeId],
+        theme: themeId
+      };
+    });
+  };
+
+  const selectTheme = (themeId: string) => {
+    vibrateLight();
+    setData(d => ({ ...d, theme: themeId }));
+  };
+
   return (
     <div className="animate-in fade-in flex flex-col gap-3">
       {/* Profile Card */}
@@ -92,6 +116,42 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
             <div className="text-[10px] text-muted-foreground tracking-[1px] uppercase mb-1">BOSSES SLAIN</div>
             <div className="text-[14px] font-bold tracking-[1px]">☠ {bossesDefeated}</div>
           </div>
+        </div>
+      </div>
+
+      {/* Theme Selection */}
+      <div className="bg-card border border-border p-4">
+        <div className="text-[11px] font-bold tracking-[2px] mb-3 flex items-center gap-1.5">
+          🎨 TERMINAL THEME
+        </div>
+        <div className="grid grid-cols-1 gap-2">
+          {THEMES.map(t => {
+            const unlocked = (data.unlockedThemes || []).includes(t.id);
+            const active = data.theme === t.id;
+            const canAfford = data.user.coins >= t.cost;
+            return (
+              <div key={t.id} className={`flex justify-between items-center p-3 border ${active ? 'border-foreground bg-foreground text-background' : 'border-border'}`}>
+                <div className="text-[11px] font-bold tracking-[2px] uppercase">{t.name}</div>
+                {unlocked ? (
+                  <button
+                    onClick={() => selectTheme(t.id)}
+                    disabled={active}
+                    className={`text-[10px] tracking-[2px] uppercase px-3 py-1 border transition-colors ${active ? 'border-background text-background' : 'border-border bg-background hover:bg-muted'}`}
+                  >
+                    {active ? 'ACTIVE' : 'SELECT'}
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => purchaseTheme(t.id, t.cost)}
+                    disabled={!canAfford}
+                    className={`text-[10px] tracking-[2px] uppercase px-3 py-1 border transition-colors ${canAfford ? 'border-foreground bg-foreground text-background hover:opacity-90' : 'border-border bg-muted text-muted-foreground opacity-50 cursor-not-allowed'}`}
+                  >
+                    {t.cost} COINS
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 

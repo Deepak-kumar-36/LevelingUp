@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { EQUIPMENT_ITEMS } from '../../lib/html-constants';
+import { vibrateHeavy, vibrateSuccess } from '../../lib/haptics';
 
 export function BossView({ toast }: { toast: (msg: string) => void }) {
   const { data, setData } = useAppStore();
@@ -97,8 +98,10 @@ export function BossView({ toast }: { toast: (msg: string) => void }) {
     });
 
     if (b.hp - b.damage <= 0) {
+      vibrateSuccess();
       toast(`☠ ${b.name.toUpperCase()} DEFEATED! +${b.xpReward} XP`);
     } else {
+      vibrateHeavy();
       toast(`⚔ -${b.damage} HP`);
     }
   };

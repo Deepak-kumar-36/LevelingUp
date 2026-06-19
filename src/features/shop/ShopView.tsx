@@ -1,5 +1,6 @@
 import { useAppStore, dKey, numId } from '../../store/useAppStore';
 import { SHOP, EQUIPMENT_ITEMS } from '../../lib/html-constants';
+import { vibrateSuccess, vibrateError } from '../../lib/haptics';
 
 export function ShopView({ toast }: { toast: (msg: string) => void }) {
   const { data, setData } = useAppStore();
@@ -9,9 +10,11 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
   const buyItem = (item: typeof SHOP[0]) => {
     setData(d => {
       if (d.user.coins < item.cost) {
+        vibrateError();
         toast('✗ INSUFFICIENT COINS');
         return d;
       }
+      vibrateSuccess();
       toast('✓ REDEEMED: ' + item.name);
       return {
         ...d,
@@ -27,9 +30,11 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
   const buyEquipment = (eq: typeof EQUIPMENT_ITEMS[0]) => {
     setData(d => {
       if (d.user.coins < eq.cost) {
+        vibrateError();
         toast('✗ INSUFFICIENT COINS');
         return d;
       }
+      vibrateSuccess();
       toast('✓ ACQUIRED: ' + eq.name);
       return {
         ...d,

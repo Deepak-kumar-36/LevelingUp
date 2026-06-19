@@ -42,6 +42,12 @@ export const EQUIPMENT_ITEMS = [
   { id: 'eq_ring_1', name: 'Ring of Focus', slot: 'accessory', cost: 500, stats: { discipline: 3 }, desc: 'Keeps your mind sharp.' }
 ];
 
+export const THEMES = [
+  { id: 'theme-default', name: 'Monochrome (Default)', cost: 0 },
+  { id: 'theme-blood', name: 'Blood Moon', cost: 5000 },
+  { id: 'theme-matrix', name: 'The Matrix', cost: 5000 }
+];
+
 export const EXP_CATS = ['FOOD', 'TRAVEL', 'COLLEGE', 'ENTERTAIN', 'MISC'];
 export const CAT_CLR: Record<string, string> = { FOOD: '#16a34a', TRAVEL: '#4ade80', COLLEGE: '#86efac', ENTERTAIN: '#666', MISC: '#999' };
 export const MONTHS = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
@@ -91,6 +97,8 @@ export const INIT = {
   achievements: [] as string[],
   achievementQueue: [] as string[],
   inventory: [] as string[],
+  theme: 'theme-default' as string,
+  unlockedThemes: ['theme-default'] as string[],
   equipped: {
     head: null as string | null,
     body: null as string | null,

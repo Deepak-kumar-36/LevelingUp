@@ -1,5 +1,6 @@
 import { useAppStore, dKey, wKey, calcStreak, numId } from '../../store/useAppStore';
 import { QUESTS as DEF_QUESTS, WEEKLY as DEF_WEEKLY, STATS, SICON, RANKS } from '../../lib/html-constants';
+import { vibrateSuccess, vibrateLight } from '../../lib/haptics';
 import { useMemo, useState } from 'react';
 
 export function DashboardView() {
@@ -33,6 +34,7 @@ export function DashboardView() {
   const [wUnit, setWUnit] = useState('TIMES');
 
   const toggleQuest = (qid: string) => {
+    vibrateLight();
     setData(d => {
       const q = (d.quests ?? DEF_QUESTS).find((x: any) => x.id === qid)!;
       const day = d.dayData[TK] ?? { quests: [], xp: 0, coins: 0 };
@@ -54,6 +56,7 @@ export function DashboardView() {
         }
       };
       const ns = calcStreak(newDD, (d.quests ?? DEF_QUESTS).length);
+      if (!isDone) vibrateSuccess();
       return {
         ...d,
         user: {
@@ -69,6 +72,7 @@ export function DashboardView() {
   };
 
   const adjWeekly = (gid: string, delta: number) => {
+    vibrateLight();
     setData(d => {
       const g = (d.weekly ?? DEF_WEEKLY).find((x: any) => x.id === gid)!;
       const wp = d.weeklyProgress[wk] ?? {};
@@ -116,6 +120,7 @@ export function DashboardView() {
   };
 
   const deleteQuest = (qid: string) => {
+    vibrateLight();
     setData(d => ({
       ...d,
       quests: (d.quests ?? DEF_QUESTS).filter((q: any) => q.id !== qid)
@@ -123,6 +128,7 @@ export function DashboardView() {
   };
 
   const deleteWeekly = (wid: string) => {
+    vibrateLight();
     setData(d => ({
       ...d,
       weekly: (d.weekly ?? DEF_WEEKLY).filter((w: any) => w.id !== wid)

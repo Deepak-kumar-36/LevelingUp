@@ -97,3 +97,52 @@
     opacity: 1;
   }
 }
+
+/* Themes */
+.theme-default {
+  /* Inherits from @theme */
+}
+
+.theme-blood {
+  --color-background: #0a0000;
+  --color-background-alt: #140000;
+  --color-foreground: #ff3333;
+  --color-card: #140000;
+  --color-card-foreground: #ff3333;
+  --color-popover: #140000;
+  --color-popover-foreground: #ff3333;
+  --color-primary: #ff3333;
+  --color-primary-foreground: #0a0000;
+  --color-secondary: #330000;
+  --color-secondary-foreground: #ff3333;
+  --color-muted: #330000;
+  --color-muted-foreground: #aa3333;
+  --color-accent: #330000;
+  --color-accent-foreground: #ff3333;
+  --color-border: #330000;
+  --color-success: #ff3333;
+  --color-success-alt: #ff6666;
+}
+
+.theme-matrix {
+  --color-background: #000a00;
+  --color-background-alt: #001400;
+  --color-foreground: #33ff33;
+  --color-card: #001400;
+  --color-card-foreground: #33ff33;
+  --color-popover: #001400;
+  --color-popover-foreground: #33ff33;
+  --color-primary: #33ff33;
+  --color-primary-foreground: #000a00;
+  --color-secondary: #003300;
+  --color-secondary-foreground: #33ff33;
+  --color-muted: #003300;
+  --color-muted-foreground: #33aa33;
+  --color-accent: #003300;
+  --color-accent-foreground: #33ff33;
+  --color-border: #003300;
+  --color-success: #33ff33;
+  --color-success-alt: #66ff66;
+  --color-destructive: #ff3333;
+}
+

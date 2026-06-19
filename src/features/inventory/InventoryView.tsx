@@ -1,5 +1,6 @@
 import { useAppStore } from '../../store/useAppStore';
 import { EQUIPMENT_ITEMS } from '../../lib/html-constants';
+import { vibrateLight, vibrateSuccess } from '../../lib/haptics';
 import { useMemo } from 'react';
 
 export function InventoryView({ toast }: { toast: (msg: string) => void }) {
@@ -17,10 +18,12 @@ export function InventoryView({ toast }: { toast: (msg: string) => void }) {
         [item.slot]: item.id
       }
     }));
+    vibrateSuccess();
     toast(`✓ EQUIPPED: ${item.name}`);
   };
 
   const unequipItem = (slot: string) => {
+    vibrateLight();
     setData(d => ({
       ...d,
       equipped: {

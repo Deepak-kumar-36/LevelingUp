@@ -14,6 +14,7 @@ import { BossView } from './features/bosses/BossView';
 import { AchievementsView } from './features/achievements/AchievementsView';
 import { OnboardingView } from './features/onboarding/OnboardingView';
 import { SettingsView } from './features/settings/SettingsView';
+import { vibrateLight } from './lib/haptics';
 
 export default function App() {
   const { isReady, loadFromDb, data, setData } = useAppStore();
@@ -65,6 +66,13 @@ export default function App() {
       setData(d => ({ ...d, lastBacklogCheck: yesterday }));
     }
   }, [isReady, data.setupDone]);
+
+  // Sync theme to body class
+  useEffect(() => {
+    if (data.theme) {
+      document.body.className = data.theme;
+    }
+  }, [data.theme]);
 
   // Achievement toast queue
   useEffect(() => {
@@ -130,7 +138,10 @@ export default function App() {
           {navs.map(n => (
             <button
               key={n.id}
-              onClick={() => setView(n.id)}
+              onClick={() => {
+                vibrateLight();
+                setView(n.id);
+              }}
               className={`px-3 py-2 md:py-1 border border-border text-[10px] md:text-[11px] tracking-[1px] uppercase transition-colors whitespace-nowrap flex-shrink-0 ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
             >
               {n.label}
