@@ -102,25 +102,28 @@ export default function App() {
   return (
     <div className="min-h-screen pb-[max(env(safe-area-inset-bottom),1rem)] md:pb-0">
       {/* Top Bar */}
-      <div className="sticky top-0 z-50 flex items-center justify-between p-2 md:p-3 pt-[max(env(safe-area-inset-top),0.5rem)] md:pt-3 bg-background border-b border-border flex-wrap gap-2">
-        <div className="font-bold text-[13px] tracking-[3px]">
-          &gt;_ LEVELING UP
+      <div className="sticky top-0 z-50 flex flex-col gap-2 p-2 md:p-3 pt-[max(env(safe-area-inset-top),0.5rem)] md:pt-3 bg-background border-b border-border">
+        {/* Header Row */}
+        <div className="flex items-center justify-between w-full">
+          <div className="font-bold text-[13px] tracking-[3px]">
+            &gt;_ LEVELING UP
+          </div>
+          <div className="px-3 py-1 border border-border text-[11px] tracking-[1px] flex items-center gap-1 bg-background whitespace-nowrap">
+            <span className="text-success">●</span> {getRank(data?.user?.totalXp ?? 0).l} | {data?.user?.name || 'USER'}
+          </div>
         </div>
 
-        <div className="flex flex-1 md:flex-none items-center gap-1 md:gap-1.5 overflow-x-auto no-scrollbar">
+        {/* Navigation Slider */}
+        <div className="flex items-center gap-1 md:gap-1.5 overflow-x-auto no-scrollbar pb-1 w-full">
           {navs.map(n => (
             <button
               key={n.id}
               onClick={() => setView(n.id)}
-              className={`px-2 md:px-3 py-2 md:py-1 border border-border text-[10px] md:text-[11px] tracking-[1px] uppercase transition-colors whitespace-nowrap flex-shrink-0 ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
+              className={`px-3 py-2 md:py-1 border border-border text-[10px] md:text-[11px] tracking-[1px] uppercase transition-colors whitespace-nowrap flex-shrink-0 ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
             >
               {n.label}
             </button>
           ))}
-        </div>
-
-        <div className="px-3 py-1 border border-border text-[11px] tracking-[1px] flex items-center gap-1 bg-background whitespace-nowrap ml-auto">
-          <span className="text-success">●</span> {getRank(data?.user?.totalXp ?? 0).l} | {data?.user?.name || 'USER'}
         </div>
       </div>
 
