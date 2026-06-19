@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { GravityLanding } from './features/landing/GravityLanding.tsx'
+import { PremiumLanding } from './features/landing/PremiumLanding.tsx'
 
 const RootApp = () => {
   // Try to load from localStorage if they have already seen the landing page
@@ -16,7 +16,7 @@ const RootApp = () => {
   };
 
   if (showLanding) {
-    return <GravityLanding onEnter={handleEnterApp} />;
+    return <PremiumLanding onEnter={handleEnterApp} />;
   }
 
   return <App />;
