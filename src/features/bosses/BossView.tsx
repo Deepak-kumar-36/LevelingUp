@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { EQUIPMENT_ITEMS } from '../../lib/html-constants';
+import { EQUIPMENT_ITEMS } from '../../lib/constants';
 import { vibrateHeavy, vibrateSuccess } from '../../lib/haptics';
+import type { Boss } from '../../types';
 
 export function BossView({ toast }: { toast: (msg: string) => void }) {
   const { data, setData } = useAppStore();
   const bosses = data.bosses || [];
 
-  // Pomodoro State
   const [timeLeft, setTimeLeft] = useState(3600); // 60 minutes
   const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
-    let interval: any;
+    let interval: ReturnType<typeof setInterval>;
     if (isRunning && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((t) => t - 1);
@@ -22,10 +22,10 @@ export function BossView({ toast }: { toast: (msg: string) => void }) {
       handlePomodoroComplete();
     }
     return () => clearInterval(interval);
-  }, [isRunning, timeLeft]);
+  }, [isRunning, timeLeft]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePomodoroComplete = () => {
-    const timeBoss = bosses.find((b: any) => b.id === 'b4');
+    const timeBoss = bosses.find(b => b.id === 'b4');
     if (timeBoss) {
       attackBoss(timeBoss);
       toast('✧ TEMPUS FUGIT DAMAGED ✧');
@@ -40,10 +40,10 @@ export function BossView({ toast }: { toast: (msg: string) => void }) {
     return `${m}:${s}`;
   };
 
-  const attackBoss = (b: any) => {
+  const attackBoss = (b: Boss) => {
     setData((d) => {
       const bList = d.bosses || [];
-      const idx = bList.findIndex((x: any) => x.id === b.id);
+      const idx = bList.findIndex(x => x.id === b.id);
       if (idx === -1) return d;
 
       const updatedBoss = { ...bList[idx] };
@@ -53,22 +53,20 @@ export function BossView({ toast }: { toast: (msg: string) => void }) {
       let coinsGained = 0;
 
       const newBosses = [...bList];
-      const prevTotal = d.user?.totalXp || 0;
+      const prevTotal = d.user.totalXp;
 
       if (updatedBoss.hp <= 0) {
         xpGained = updatedBoss.xpReward;
         coinsGained = updatedBoss.coinReward;
         updatedBoss.hp = updatedBoss.maxHp; // Respawn
 
-        // 30% chance for an equipment drop
         if (Math.random() < 0.3) {
           const unownedEquipment = EQUIPMENT_ITEMS.filter(eq => !(d.inventory || []).includes(eq.id));
           if (unownedEquipment.length > 0) {
             const randomDrop = unownedEquipment[Math.floor(Math.random() * unownedEquipment.length)];
-            
-            // Queue the drop notification
             const achievementMsg = `🎁 LOOT DROP! You obtained: ${randomDrop.name}`;
-            
+            newBosses[idx] = updatedBoss;
+
             return {
               ...d,
               bosses: newBosses,
@@ -77,7 +75,7 @@ export function BossView({ toast }: { toast: (msg: string) => void }) {
               user: {
                 ...d.user,
                 totalXp: prevTotal + xpGained,
-                coins: (d.user?.coins || 0) + coinsGained,
+                coins: d.user.coins + coinsGained,
               }
             };
           }
@@ -92,7 +90,7 @@ export function BossView({ toast }: { toast: (msg: string) => void }) {
         user: {
           ...d.user,
           totalXp: prevTotal + xpGained,
-          coins: (d.user?.coins || 0) + coinsGained,
+          coins: d.user.coins + coinsGained,
         }
       };
     });
@@ -107,79 +105,84 @@ export function BossView({ toast }: { toast: (msg: string) => void }) {
   };
 
   return (
-    <div className="animate-in fade-in space-y-4">
+    <div className="animate-in fade-in flex flex-col gap-16 max-w-5xl mx-auto z-10 relative pointer-events-auto h-full px-4 pt-4 pb-20 overflow-y-auto no-scrollbar">
+      
       {/* Pomodoro Arcanum */}
-      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4 flex flex-col items-center justify-center text-center">
-        <div className="text-[11px] font-bold tracking-wide mb-1 flex items-center gap-1.5 uppercase text-muted-foreground">
-          ✧ The Pomodoro Arcana ✧
+      <div className="flex flex-col items-center justify-center text-center mt-10">
+        <div className="text-[11px] font-bold tracking-[0.3em] mb-2 flex items-center gap-1.5 uppercase text-muted-foreground/50">
+          The Chronos Protocol
         </div>
-        <div className="text-xs text-muted-foreground tracking-wide mb-4 uppercase">
+        <div className="text-[10px] text-muted-foreground tracking-[0.2em] mb-8 uppercase opacity-50">
           Focus to damage Tempus Fugit
         </div>
-        <div className="text-5xl font-mono font-bold tracking-widest mb-4 text-foreground">
+        <div className="text-[80px] md:text-[120px] font-mono font-bold tracking-widest text-primary text-glow leading-none mb-10">
           {formatTime(timeLeft)}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-6">
           <button
             onClick={toggleTimer}
-            className={`px-6 py-2 border text-[11px] font-bold tracking-wide uppercase transition-colors ${
-              isRunning ? 'bg-destructive text-destructive-foreground border-destructive' : 'bg-foreground text-background border-foreground hover:opacity-90'
+            className={`text-[12px] font-bold tracking-[0.3em] uppercase transition-colors ${
+              isRunning ? 'text-destructive hover:text-white' : 'text-primary hover:text-white'
             }`}
           >
-            {isRunning ? 'PAUSE' : 'CAST FOCUS'}
+            {isRunning ? '[ SUSPEND ]' : '[ INITIATE ]'}
           </button>
           {!isRunning && timeLeft < 3600 && (
             <button
               onClick={() => setTimeLeft(3600)}
-              className="px-4 py-2 border border-border text-[11px] tracking-wide uppercase bg-background hover:bg-muted transition-colors text-muted-foreground"
+              className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground hover:text-white transition-colors"
             >
-              RESET
+              [ RESET ]
             </button>
           )}
         </div>
       </div>
 
+      <div className="w-full h-[1px] bg-white/5 my-4" />
+
       {/* Boss List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {bosses.map((b: any) => {
+      <div className="flex flex-col gap-12">
+        <div className="text-[11px] text-muted-foreground tracking-[0.3em] uppercase text-center mb-4">
+          Active Threats
+        </div>
+        
+        {bosses.map((b) => {
           const hpPct = Math.max(0, Math.min(100, (b.hp / b.maxHp) * 100));
           return (
-            <div key={b.id} className="bg-card border border-border/50 rounded-xl card-shadow p-4 relative overflow-hidden group">
-              <div className="flex justify-between items-start mb-2 relative z-10">
+            <div key={b.id} className="flex flex-col gap-3">
+              <div className="flex justify-between items-end">
                 <div>
-                  <div className="text-lg font-bold uppercase tracking-wide text-destructive">
+                  <div className="text-[16px] font-bold uppercase tracking-[0.2em] text-foreground mb-1">
                     {b.name}
                   </div>
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     {b.title}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[11px] font-bold tracking-wide text-foreground">
-                    {b.hp} / {b.maxHp} HP
-                  </div>
-                  <div className="text-[9px] uppercase tracking-wide text-success">
-                    REWARD: {b.xpReward} XP
+                  <div className="text-[12px] font-bold font-mono tracking-[0.1em] text-primary">
+                    {b.hp} <span className="text-[10px] text-muted-foreground">/ {b.maxHp} HP</span>
                   </div>
                 </div>
               </div>
 
-              <div className="h-4 bg-muted mb-4 border border-border relative z-10">
+              <div className="h-[2px] bg-white/5 w-full relative">
                 <div
-                  className="h-full bg-destructive transition-all duration-500 ease-out"
+                  className="h-full bg-primary transition-all duration-1000 ease-out"
                   style={{ width: `${hpPct}%` }}
                 />
               </div>
 
-              <div className="flex justify-between items-center relative z-10">
-                <div className="text-[10px] tracking-wide text-muted-foreground uppercase max-w-[60%]">
-                  Action: {b.actionDesc}
+              <div className="flex justify-between items-start mt-2">
+                <div className="text-[10px] tracking-[0.1em] text-muted-foreground uppercase max-w-[60%] leading-relaxed">
+                  REQUIREMENT: {b.actionDesc}<br/>
+                  REWARD: {b.xpReward} XP / {b.coinReward} C
                 </div>
                 <button
                   onClick={() => attackBoss(b)}
-                  className="px-4 py-1.5 border border-destructive bg-destructive text-destructive-foreground text-[11px] font-bold tracking-wide uppercase hover:bg-background hover:text-destructive transition-colors"
+                  className="text-[11px] font-bold tracking-[0.3em] uppercase text-destructive hover:text-white transition-colors"
                 >
-                  ATTACK
+                  [ STRIKE ]
                 </button>
               </div>
             </div>

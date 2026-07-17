@@ -1,41 +1,23 @@
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+/**
+ * Haptic feedback utilities.
+ *
+ * Wraps Capacitor's Haptics API with safe fallbacks for web.
+ * Every call is wrapped in a try/catch so the app never crashes
+ * on platforms that don't support haptics.
+ */
 
-export const vibrateLight = async () => {
-  try {
-    await Haptics.impact({ style: ImpactStyle.Light });
-  } catch (e) {
-    // Ignore on web
-  }
-};
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
-export const vibrateMedium = async () => {
+async function safeHaptic(fn: () => Promise<void>): Promise<void> {
   try {
-    await Haptics.impact({ style: ImpactStyle.Medium });
-  } catch (e) {
-    // Ignore on web
+    await fn();
+  } catch {
+    // Silently ignore — haptics aren't available on web
   }
-};
+}
 
-export const vibrateHeavy = async () => {
-  try {
-    await Haptics.impact({ style: ImpactStyle.Heavy });
-  } catch (e) {
-    // Ignore on web
-  }
-};
-
-export const vibrateSuccess = async () => {
-  try {
-    await Haptics.notification({ type: 'SUCCESS' as any });
-  } catch (e) {
-    // Ignore on web
-  }
-};
-
-export const vibrateError = async () => {
-  try {
-    await Haptics.notification({ type: 'ERROR' as any });
-  } catch (e) {
-    // Ignore on web
-  }
-};
+export const vibrateLight = () => safeHaptic(() => Haptics.impact({ style: ImpactStyle.Light }));
+export const vibrateMedium = () => safeHaptic(() => Haptics.impact({ style: ImpactStyle.Medium }));
+export const vibrateHeavy = () => safeHaptic(() => Haptics.impact({ style: ImpactStyle.Heavy }));
+export const vibrateSuccess = () => safeHaptic(() => Haptics.notification({ type: NotificationType.Success }));
+export const vibrateError = () => safeHaptic(() => Haptics.notification({ type: NotificationType.Error }));

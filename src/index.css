@@ -1,38 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #f8fafc;
-  --color-background-alt: #f1f5f9;
-  --color-foreground: #0f172a;
+  --color-background: #030303;
+  --color-background-alt: #0a0a0a;
+  --color-foreground: #e2e8f0;
   
-  --color-card: #ffffff;
-  --color-card-foreground: #0f172a;
+  --color-card: transparent;
+  --color-card-foreground: #e2e8f0;
   
-  --color-popover: #ffffff;
-  --color-popover-foreground: #0f172a;
+  --color-popover: #050505;
+  --color-popover-foreground: #e2e8f0;
   
-  --color-primary: #3b82f6;
+  --color-primary: #dc2626; /* Dark intense red */
   --color-primary-foreground: #ffffff;
   
-  --color-secondary: #e2e8f0;
-  --color-secondary-foreground: #0f172a;
+  --color-secondary: #171717;
+  --color-secondary-foreground: #e2e8f0;
   
-  --color-muted: #f1f5f9;
-  --color-muted-foreground: #64748b;
+  --color-muted: #171717;
+  --color-muted-foreground: #525252;
   
-  --color-accent: #eff6ff;
-  --color-accent-foreground: #2563eb;
+  --color-accent: #262626;
+  --color-accent-foreground: #dc2626;
   
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
   
   --color-success: #10b981;
-  --color-success-alt: #34d399;
+  --color-success-alt: #059669;
   
-  --color-border: #e2e8f0;
-  --color-input: #e2e8f0;
-  --color-ring: #3b82f6;
-  --radius: 0.75rem;
+  --color-border: transparent; /* No borders in the void */
+  --color-input: transparent;
+  --color-ring: #dc2626;
+  --radius: 0; /* Brutalism */
 }
 
 @layer base {
@@ -166,11 +166,28 @@
   --color-destructive: #ef4444;
 }
 
-/* Base Styles */
-.card-shadow {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+/* The Corrupted Void Base */
+.void-gradient {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center 120%, rgba(41, 8, 8, 0.8) 0%, rgba(3, 3, 3, 1) 60%);
+  pointer-events: none;
+  z-index: 0;
 }
 
+/* Remove all card shadows and backgrounds */
+.card-shadow,
 .theme-dark .card-shadow {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  box-shadow: none !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* Typography Hierarchy Utilities */
+.text-glow {
+  text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
 }

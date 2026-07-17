@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useAppStore, dKey } from './store/useAppStore';
-import { QUESTS as DEF_QUESTS, RANKS } from './lib/html-constants';
+import { useAppStore, formatDateKey } from './store/useAppStore';
+import { DEFAULT_QUESTS, RANKS } from './lib/constants';
 import { DashboardView } from './features/dashboard/DashboardView';
 import { CalendarView } from './features/calendar/CalendarView';
 import { YearView } from './features/calendar/YearView';
@@ -21,12 +21,12 @@ export default function App() {
   const [view, setView] = useState('dash');
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  const myQuests = data?.quests ?? DEF_QUESTS;
+  const myQuests = data?.quests ?? DEFAULT_QUESTS;
   const getRank = (xp: number) => RANKS.find(r => xp >= r.min && xp < r.max) ?? RANKS[5];
 
   useEffect(() => {
     loadFromDb();
-  }, []);
+  }, [loadFromDb]);
 
   const toast = (m: string) => {
     setToastMsg(m);
@@ -36,7 +36,7 @@ export default function App() {
   // Backlog detection
   useEffect(() => {
     if (!isReady || !data.setupDone) return;
-    const yesterday = dKey(new Date(Date.now() - 86400000));
+    const yesterday = formatDateKey(new Date(Date.now() - 86400000));
     if (data.lastBacklogCheck === yesterday) return;
 
     const yData = data.dayData[yesterday];
@@ -45,7 +45,7 @@ export default function App() {
       return;
     }
 
-    const incomplete = myQuests.filter((q: any) => !(yData.quests || []).includes(q.id));
+    const incomplete = myQuests.filter(q => !(yData.quests || []).includes(q.id));
     if (incomplete.length === 0) {
       setData(d => ({ ...d, lastBacklogCheck: yesterday }));
       return;
@@ -53,8 +53,8 @@ export default function App() {
 
     const existing = new Set((data.backlogs || []).map(b => b.id));
     const newBL = incomplete
-      .filter((q: any) => !existing.has(q.id))
-      .map((q: any) => ({ id: q.id, name: q.name, xp: Math.floor(q.xp / 2), coins: Math.floor(q.coins / 2) }));
+      .filter(q => !existing.has(q.id))
+      .map(q => ({ id: q.id, name: q.name, xp: Math.floor(q.xp / 2), coins: Math.floor(q.coins / 2) }));
 
     if (newBL.length > 0) {
       setData(d => ({
@@ -65,7 +65,7 @@ export default function App() {
     } else {
       setData(d => ({ ...d, lastBacklogCheck: yesterday }));
     }
-  }, [isReady, data.setupDone]);
+  }, [isReady, data.setupDone, data.lastBacklogCheck, data.dayData, data.backlogs, myQuests, setData]);
 
   // Sync theme to body class
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function App() {
       // Clear the queue in state
       setData(d => ({ ...d, achievementQueue: [] }));
     }
-  }, [data.achievementQueue]);
+  }, [data.achievementQueue, setData]);
 
   if (!isReady) return null;
 
@@ -112,9 +112,11 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen pb-[max(env(safe-area-inset-bottom),1rem)] md:pb-0">
-      {/* Top Bar */}
-      <div className="sticky top-0 z-50 flex flex-col gap-2 p-2 md:p-3 pt-[max(env(safe-area-inset-top),0.5rem)] md:pt-3 bg-background border-b border-border">
+    <div className="min-h-screen relative font-mono text-foreground overflow-hidden">
+      <div className="void-gradient" />
+      
+      {/* Top Bar - Borderless, floating */}
+      <div className="sticky top-0 z-50 flex flex-col gap-2 p-4 pt-[max(env(safe-area-inset-top),1rem)]">
         {/* Header Row */}
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
@@ -124,12 +126,12 @@ export default function App() {
                 <path d="M 512 470 L 350 730 L 430 730 L 512 600 L 594 730 L 674 730 Z" fill="currentColor" />
               </g>
             </svg>
-            <div className="font-bold text-[13px] tracking-[3px]">
+            <div className="font-bold text-[13px] tracking-[0.2em] text-muted-foreground">
               &gt;_ LEVELING UP
             </div>
           </div>
-          <div className="px-3 py-1 border border-border text-[11px] tracking-wide flex items-center gap-1 bg-background whitespace-nowrap">
-            <span className="text-success">●</span> {getRank(data?.user?.totalXp ?? 0).l} | {data?.user?.name || 'USER'}
+          <div className="text-[11px] tracking-[0.1em] text-muted-foreground">
+            <span className="text-primary font-bold">●</span> {getRank(data?.user?.totalXp ?? 0).label} | {data?.user?.name || 'USER'}
           </div>
         </div>
 
@@ -142,7 +144,7 @@ export default function App() {
                 vibrateLight();
                 setView(n.id);
               }}
-              className={`px-3 py-2 md:py-1 border border-border text-[10px] md:text-[11px] tracking-wide uppercase transition-colors whitespace-nowrap flex-shrink-0 ${view === n.id ? 'bg-foreground text-background font-bold' : 'bg-background hover:bg-card'}`}
+              className={`px-3 py-1 text-[10px] md:text-[11px] tracking-[0.1em] uppercase transition-colors whitespace-nowrap flex-shrink-0 ${view === n.id ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'}`}
             >
               {n.label}
             </button>
@@ -151,7 +153,7 @@ export default function App() {
       </div>
 
       {/* Main Content */}
-      <div className="p-3 md:p-4">
+      <div className="relative z-10 p-4 md:p-6 h-[calc(100vh-100px)] overflow-y-auto no-scrollbar">
         {view === 'dash' && <DashboardView />}
         {view === 'cal' && <CalendarView />}
         {view === 'year' && <YearView />}

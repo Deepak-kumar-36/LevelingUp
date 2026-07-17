@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { INIT, THEMES } from '../../lib/html-constants';
+import { INITIAL_STATE, THEMES } from '../../lib/constants';
 import { vibrateSuccess, vibrateError, vibrateLight } from '../../lib/haptics';
+import type { AppState } from '../../types';
 
 export function SettingsView({ toast }: { toast: (msg: string) => void }) {
   const { data, setData } = useAppStore();
@@ -32,12 +33,12 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
-        const imported = JSON.parse(ev.target?.result as string);
+        const imported = JSON.parse(ev.target?.result as string) as AppState;
         if (!imported.user || !imported.setupDone) {
           toast('✗ INVALID BACKUP FILE');
           return;
         }
-        setData(() => ({ ...INIT, ...imported }));
+        setData(() => ({ ...INITIAL_STATE, ...imported }));
         toast('✓ DATA RESTORED SUCCESSFULLY');
       } catch {
         toast('✗ FAILED TO READ FILE');
@@ -48,15 +49,15 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
   };
 
   const resetAll = () => {
-    setData(() => INIT);
+    setData(() => INITIAL_STATE);
     setShowReset(false);
     toast('✓ ALL DATA RESET');
   };
 
   // Calculate stats
   const totalDays = Object.keys(data.dayData || {}).length;
-  const totalQuestsCompleted = Object.values(data.dayData || {}).reduce((sum: number, d: any) => sum + (d.quests?.length || 0), 0);
-  const bossesDefeated = (data.bosses || []).reduce((sum: number, b: any) => {
+  const totalQuestsCompleted = Object.values(data.dayData || {}).reduce((sum, d) => sum + (d.quests?.length || 0), 0);
+  const bossesDefeated = (data.bosses || []).reduce((sum, b) => {
     const totalDamageDealt = b.maxHp - b.hp;
     return sum + Math.floor(totalDamageDealt / b.maxHp);
   }, 0);

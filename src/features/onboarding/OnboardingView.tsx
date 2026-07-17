@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { QUESTS } from '../../lib/html-constants';
+import { DEFAULT_QUESTS } from '../../lib/constants';
+import type { Quest } from '../../types';
 
-const FOCUS_AREAS: { id: string; label: string; icon: string; quests: any[] }[] = [
+const FOCUS_AREAS: { id: string; label: string; icon: string; quests: Quest[] }[] = [
   {
     id: 'coding', label: 'CODING', icon: '⌨',
     quests: [
@@ -62,18 +63,18 @@ export function OnboardingView() {
   };
 
   const finish = () => {
-    const chosenQuests: any[] = FOCUS_AREAS
+    const chosenQuests = FOCUS_AREAS
       .filter(a => selected.includes(a.id))
       .flatMap(a => a.quests);
 
     // If nothing picked, give them default quests
-    const finalQuests: any[] = chosenQuests.length > 0 ? chosenQuests : QUESTS as any[];
+    const finalQuests = chosenQuests.length > 0 ? chosenQuests : DEFAULT_QUESTS;
 
     setData(d => ({
       ...d,
       setupDone: true,
       user: { ...d.user, name: (name || 'HUNTER').toUpperCase() },
-      quests: finalQuests as any
+      quests: finalQuests
     }));
   };
 
@@ -193,7 +194,7 @@ export function OnboardingView() {
             <div className="text-[10px] font-bold tracking-wide mb-3 text-muted-foreground uppercase">
               YOUR DAILY QUESTS
             </div>
-            {FOCUS_AREAS.filter(a => selected.includes(a.id)).flatMap(a => a.quests).map((q: any) => (
+            {FOCUS_AREAS.filter(a => selected.includes(a.id)).flatMap(a => a.quests).map((q) => (
               <div key={q.id} className="flex justify-between py-1.5 border-b border-border text-[11px]">
                 <span className="tracking-wide">{q.name}</span>
                 <span className="text-muted-foreground">+{q.xp} XP</span>
