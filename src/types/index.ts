@@ -172,11 +172,24 @@ export interface Transaction {
   amount: number;
   category: string;
   desc: string;
+  isRecurring?: boolean;
+}
+
+export interface TreasuryBudget {
+  categoryId: string;
+  limitAmount: number;
+}
+
+export interface TreasuryMeta {
+  logStreak: number;
+  lastLogDate: string | null;
 }
 
 export interface FinanceData {
   transactions: Transaction[];
-  monthlyBudget: number;
+  budgets?: TreasuryBudget[];
+  meta?: TreasuryMeta;
+  monthlyBudget: number; // legacy
 }
 
 // ---------------------------------------------------------------------------

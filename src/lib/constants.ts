@@ -203,21 +203,23 @@ export const STAT_ICONS: Record<string, string> = {
 // Calendar / Date helpers
 // ---------------------------------------------------------------------------
 
-export const EXPENSE_CATEGORIES = ['FOOD', 'TRAVEL', 'COLLEGE', 'ENTERTAIN', 'MISC', 'BILLS', 'SHOPPING'] as const;
-export const INCOME_CATEGORIES = ['SALARY', 'ALLOWANCE', 'FREELANCE', 'INVESTMENT', 'MISC'] as const;
+export const EXPENSE_CATEGORIES = ['PROVISIONS', 'SHELTER', 'ARSENAL', 'INTEL', 'COMBAT', 'RESTORATION', 'TRAVERSAL', 'TRIBUTE', 'CUSTOM'] as const;
+export const INCOME_CATEGORIES = ['SALARY', 'BOUNTY', 'LOOT', 'YIELD', 'CUSTOM'] as const;
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  FOOD: '#16a34a',
-  TRAVEL: '#4ade80',
-  COLLEGE: '#86efac',
-  ENTERTAIN: '#facc15',
-  BILLS: '#ef4444',
-  SHOPPING: '#c084fc',
-  MISC: '#999',
-  SALARY: '#3b82f6',
-  ALLOWANCE: '#60a5fa',
-  FREELANCE: '#818cf8',
-  INVESTMENT: '#34d399',
+  PROVISIONS: '#16a34a',
+  SHELTER: '#f59e0b',
+  ARSENAL: '#ef4444',
+  INTEL: '#3b82f6',
+  COMBAT: '#f43f5e',
+  RESTORATION: '#10b981',
+  TRAVERSAL: '#8b5cf6',
+  TRIBUTE: '#64748b',
+  CUSTOM: '#737373',
+  SALARY: '#34d399',
+  BOUNTY: '#fbbf24',
+  LOOT: '#a78bfa',
+  YIELD: '#38bdf8',
 };
 
 export const MONTH_NAMES = [
@@ -264,6 +266,8 @@ export const INITIAL_STATE: AppState = {
   },
   finance: { 
     transactions: [],
+    budgets: [],
+    meta: { logStreak: 0, lastLogDate: null },
     monthlyBudget: 5000 
   },
   bosses: DEFAULT_BOSSES,
