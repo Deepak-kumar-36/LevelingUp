@@ -19,12 +19,16 @@ export interface UserStats {
 
 export type StatName = keyof UserStats;
 
+export type CharacterClass = 'NONE' | 'SHADOW' | 'BERSERKER' | 'SAGE';
+
 export interface UserProfile {
   name: string;
   totalXp: number;
   coins: number;
   longestStreak: number;
   stats: UserStats;
+  userClass: CharacterClass;
+  unlockedPerks: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -159,15 +163,19 @@ export interface HealthData {
 // Finance
 // ---------------------------------------------------------------------------
 
-export interface Expense {
+export type TransactionType = 'INCOME' | 'EXPENSE';
+
+export interface Transaction {
+  id: string;
   date: string;
+  type: TransactionType;
   amount: number;
   category: string;
   desc: string;
 }
 
 export interface FinanceData {
-  expenses: Expense[];
+  transactions: Transaction[];
   monthlyBudget: number;
 }
 
@@ -226,4 +234,8 @@ export interface AppState {
   theme: string;
   unlockedThemes: string[];
   equipped: EquippedGear;
+  bounties: Quest[];
+  completedBounties: string[];
+  lastBountyRefresh: string | null;
+  materials: Record<string, number>;
 }

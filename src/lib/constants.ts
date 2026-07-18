@@ -58,6 +58,34 @@ export const RANKS: Rank[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Classes
+// ---------------------------------------------------------------------------
+
+export const CLASSES = [
+  { id: 'SHADOW', name: 'SHADOW', desc: 'Masters of self-control. Grants bonus Discipline.', buff: { discipline: 5 } },
+  { id: 'BERSERKER', name: 'BERSERKER', desc: 'Relentless and unstoppable. Grants bonus Vitality.', buff: { vitality: 5 } },
+  { id: 'SAGE', name: 'SAGE', desc: 'Seekers of forbidden knowledge. Grants bonus Intelligence.', buff: { intelligence: 5 } },
+];
+
+export const PERKS = {
+  SHADOW: [
+    { id: 'p_shadow_1', name: 'GHOST MODE', desc: 'Streak is protected if you miss exactly one day.', cost: 1 },
+    { id: 'p_shadow_2', name: 'NIGHT OWL', desc: 'Completing quests after 10PM gives +20% XP.', cost: 1 },
+    { id: 'p_shadow_3', name: 'VOID WALK', desc: 'Ignore backlog penalties completely.', cost: 1 },
+  ],
+  BERSERKER: [
+    { id: 'p_berserk_1', name: 'ADRENALINE', desc: '10% chance to double XP from any quest.', cost: 1 },
+    { id: 'p_berserk_2', name: 'BLOODLUST', desc: 'Boss damage is increased by 20%.', cost: 1 },
+    { id: 'p_berserk_3', name: 'UNYIELDING', desc: 'Gain +1 Max HP when fighting bosses.', cost: 1 },
+  ],
+  SAGE: [
+    { id: 'p_sage_1', name: 'ALCHEMY', desc: 'All shop items are 15% cheaper.', cost: 1 },
+    { id: 'p_sage_2', name: 'TIME WEAVER', desc: 'Pomodoro sessions give +15 XP upon completion.', cost: 1 },
+    { id: 'p_sage_3', name: 'ENLIGHTENMENT', desc: 'Base XP from all quests increased by 5.', cost: 1 },
+  ]
+};
+
+// ---------------------------------------------------------------------------
 // Shop
 // ---------------------------------------------------------------------------
 
@@ -79,6 +107,24 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
   { id: 'eq_hat_1', name: 'Scholar Hat', slot: 'head', cost: 200, stats: { intelligence: 2 }, desc: 'Increases your mental capacity.' },
   { id: 'eq_armor_1', name: 'Leather Tunic', slot: 'body', cost: 250, stats: { vitality: 2 }, desc: 'Basic protection for the body.' },
   { id: 'eq_ring_1', name: 'Ring of Focus', slot: 'accessory', cost: 500, stats: { discipline: 3 }, desc: 'Keeps your mind sharp.' },
+];
+
+export const FORGE_ITEMS = [
+  { 
+    id: 'f_void_crown', name: 'Void Crown', slot: 'head', 
+    stats: { intelligence: 10, discipline: 5 }, desc: 'A crown forged from the abyss.',
+    cost: { m_void_shard: 3, m_dark_iron: 2 } 
+  },
+  { 
+    id: 'f_demon_armor', name: 'Demon Carapace', slot: 'body', 
+    stats: { vitality: 15, builder: 5 }, desc: 'Impenetrable armor from a defeated demon.',
+    cost: { m_demon_blood: 2, m_dark_iron: 5 } 
+  },
+  { 
+    id: 'f_chronos_blade', name: 'Chronos Blade', slot: 'weapon', 
+    stats: { builder: 10, intelligence: 10 }, desc: 'A blade that cuts through time itself.',
+    cost: { m_chronos_gear: 1, m_void_shard: 2, m_demon_blood: 1 } 
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -120,6 +166,26 @@ export const DEFAULT_BOSSES: Boss[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Void Bounties (Weekly Generation)
+// ---------------------------------------------------------------------------
+
+export const POSSIBLE_BOUNTIES: Quest[] = [
+  { id: 'vb1', name: '7-DAY STREAK (HARD)', xp: 1500, coins: 500, gains: { discipline: 10 } },
+  { id: 'vb2', name: 'SPEND NO MONEY FOR 3 DAYS', xp: 2000, coins: 1000, gains: { wealth: 10 } },
+  { id: 'vb3', name: '10 HOURS OF DEEP WORK', xp: 3000, coins: 300, gains: { intelligence: 15 } },
+  { id: 'vb4', name: 'RUN 20 KM TOTAL', xp: 2500, coins: 400, gains: { vitality: 15 } },
+  { id: 'vb5', name: 'READ 1 FULL BOOK', xp: 4000, coins: 500, gains: { intelligence: 20 } },
+  { id: 'vb6', name: 'NO SUGAR FOR 5 DAYS', xp: 3000, coins: 600, gains: { discipline: 15, vitality: 10 } },
+];
+
+export const BOSS_MATERIALS = [
+  { id: 'm_void_shard', name: 'VOID SHARD', rarity: 'Rare', dropChance: 0.6 },
+  { id: 'm_dark_iron', name: 'DARK IRON', rarity: 'Uncommon', dropChance: 0.8 },
+  { id: 'm_demon_blood', name: 'DEMON BLOOD', rarity: 'Epic', dropChance: 0.3 },
+  { id: 'm_chronos_gear', name: 'CHRONOS GEAR', rarity: 'Epic', dropChance: 0.2 },
+];
+
+// ---------------------------------------------------------------------------
 // Stat display helpers
 // ---------------------------------------------------------------------------
 
@@ -137,14 +203,21 @@ export const STAT_ICONS: Record<string, string> = {
 // Calendar / Date helpers
 // ---------------------------------------------------------------------------
 
-export const EXPENSE_CATEGORIES = ['FOOD', 'TRAVEL', 'COLLEGE', 'ENTERTAIN', 'MISC'] as const;
+export const EXPENSE_CATEGORIES = ['FOOD', 'TRAVEL', 'COLLEGE', 'ENTERTAIN', 'MISC', 'BILLS', 'SHOPPING'] as const;
+export const INCOME_CATEGORIES = ['SALARY', 'ALLOWANCE', 'FREELANCE', 'INVESTMENT', 'MISC'] as const;
 
 export const CATEGORY_COLORS: Record<string, string> = {
   FOOD: '#16a34a',
   TRAVEL: '#4ade80',
   COLLEGE: '#86efac',
-  ENTERTAIN: '#666',
+  ENTERTAIN: '#facc15',
+  BILLS: '#ef4444',
+  SHOPPING: '#c084fc',
   MISC: '#999',
+  SALARY: '#3b82f6',
+  ALLOWANCE: '#60a5fa',
+  FREELANCE: '#818cf8',
+  INVESTMENT: '#34d399',
 };
 
 export const MONTH_NAMES = [
@@ -174,6 +247,8 @@ export const INITIAL_STATE: AppState = {
     coins: 0,
     longestStreak: 0,
     stats: { intelligence: 0, builder: 0, discipline: 0, vitality: 0, wealth: 0 },
+    userClass: 'NONE',
+    unlockedPerks: [],
   },
   quests: DEFAULT_QUESTS,
   weekly: DEFAULT_WEEKLY,
@@ -187,7 +262,10 @@ export const INITIAL_STATE: AppState = {
     foodLogs: [],
     targets: { calories: 2500, protein: 100, targetWeight: 65, startWeight: 56 },
   },
-  finance: { expenses: [], monthlyBudget: 5000 },
+  finance: { 
+    transactions: [],
+    monthlyBudget: 5000 
+  },
   bosses: DEFAULT_BOSSES,
   lastBacklogCheck: null,
   achievements: [],
@@ -196,4 +274,8 @@ export const INITIAL_STATE: AppState = {
   theme: 'theme-default',
   unlockedThemes: ['theme-default'],
   equipped: { head: null, body: null, weapon: null, accessory: null },
+  bounties: [],
+  completedBounties: [],
+  lastBountyRefresh: null,
+  materials: {},
 };

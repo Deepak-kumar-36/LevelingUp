@@ -1,5 +1,5 @@
 import { useAppStore, calculateStreak } from '../../store/useAppStore';
-import { DEFAULT_QUESTS, STAT_NAMES, DAY_NAMES, EQUIPMENT_ITEMS } from '../../lib/constants';
+import { DEFAULT_QUESTS, STAT_NAMES, EQUIPMENT_ITEMS } from '../../lib/constants';
 import { useMemo } from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 

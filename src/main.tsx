@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import { PremiumLanding } from './features/landing/PremiumLanding.tsx'
 
+// eslint-disable-next-line react-refresh/only-export-components
 const RootApp = () => {
   // Try to load from localStorage if they have already seen the landing page
   const [showLanding, setShowLanding] = useState(() => {

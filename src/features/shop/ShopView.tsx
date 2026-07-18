@@ -7,9 +7,13 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
   const redeemed = data.redeemed ?? [];
   const TK = formatDateKey(new Date());
 
+  const getCost = (base: number) => 
+    (data.user.unlockedPerks || []).includes('p_sage_1') ? Math.ceil(base * 0.85) : base;
+
   const buyItem = (item: typeof SHOP_ITEMS[0]) => {
+    const cost = getCost(item.cost);
     setData(d => {
-      if (d.user.coins < item.cost) {
+      if (d.user.coins < cost) {
         vibrateError();
         toast('✗ INSUFFICIENT COINS');
         return d;
@@ -18,7 +22,7 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
       toast('✓ REDEEMED: ' + item.name);
       return {
         ...d,
-        user: { ...d.user, coins: d.user.coins - item.cost },
+        user: { ...d.user, coins: d.user.coins - cost },
         redeemed: [
           ...d.redeemed,
           JSON.stringify({ id: generateId(), item: item.name, date: TK })
@@ -28,8 +32,9 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
   };
 
   const buyEquipment = (eq: typeof EQUIPMENT_ITEMS[0]) => {
+    const cost = getCost(eq.cost);
     setData(d => {
-      if (d.user.coins < eq.cost) {
+      if (d.user.coins < cost) {
         vibrateError();
         toast('✗ INSUFFICIENT COINS');
         return d;
@@ -38,7 +43,7 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
       toast('✓ ACQUIRED: ' + eq.name);
       return {
         ...d,
-        user: { ...d.user, coins: d.user.coins - eq.cost },
+        user: { ...d.user, coins: d.user.coins - cost },
         inventory: [...(d.inventory || []), eq.id]
       };
     });
@@ -65,14 +70,14 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
             </div>
             <div className="flex flex-col gap-4">
               {[...redeemed].reverse().slice(0, 10).map((rString, i) => {
-                let r: { item?: string; date?: string } = {};
+                let r: { item?: string; date?: string };
                 try {
                   if (typeof rString === 'string') {
                     r = JSON.parse(rString);
                   } else {
                     r = rString;
                   }
-                } catch (e) {
+                } catch {
                   r = { item: String(rString), date: '' };
                 }
                 return (
@@ -98,12 +103,13 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
           
           <div className="flex flex-col gap-6">
             {SHOP_ITEMS.map(item => {
-              const can = data.user.coins >= item.cost;
+              const cost = getCost(item.cost);
+              const can = data.user.coins >= cost;
               return (
                 <div key={item.id} className={`flex flex-col gap-2 transition-opacity ${can ? 'opacity-100' : 'opacity-30'}`}>
                   <div className="flex justify-between items-start">
                     <div className="font-bold tracking-[0.1em] text-[13px] uppercase text-foreground">{item.name}</div>
-                    <div className="text-[12px] font-mono font-bold text-primary">{item.cost} C</div>
+                    <div className="text-[12px] font-mono font-bold text-primary">{cost} C</div>
                   </div>
                   <div className="text-[10px] text-muted-foreground tracking-[0.1em] uppercase leading-relaxed">
                     {item.desc}
@@ -117,7 +123,7 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
                         can ? 'text-primary hover:text-white' : 'text-muted-foreground cursor-not-allowed'
                       }`}
                     >
-                      {can ? '[ REDEEM ]' : `[ SHORT ${item.cost - data.user.coins} C ]`}
+                      {can ? '[ REDEEM ]' : `[ SHORT ${cost - data.user.coins} C ]`}
                     </button>
                   </div>
                   <div className="h-[1px] w-full bg-white/5 mt-4" />
@@ -135,8 +141,9 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
           
           <div className="flex flex-col gap-6">
             {EQUIPMENT_ITEMS.map(eq => {
+              const cost = getCost(eq.cost);
               const owned = (data.inventory || []).includes(eq.id);
-              const can = data.user.coins >= eq.cost && !owned;
+              const can = data.user.coins >= cost && !owned;
               return (
                 <div key={eq.id} className={`flex flex-col gap-2 transition-opacity ${can || owned ? 'opacity-100' : 'opacity-30'}`}>
                   <div className="flex justify-between items-start">
@@ -144,7 +151,7 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
                       {eq.name} <span className="text-[9px] text-muted-foreground ml-2">[{eq.slot}]</span>
                     </div>
                     <div className="text-[12px] font-mono font-bold text-primary">
-                      {owned ? 'ACQUIRED' : `${eq.cost} C`}
+                      {owned ? 'ACQUIRED' : `${cost} C`}
                     </div>
                   </div>
                   <div className="text-[10px] text-muted-foreground tracking-[0.1em] uppercase leading-relaxed">
@@ -163,7 +170,7 @@ export function ShopView({ toast }: { toast: (msg: string) => void }) {
                         can ? 'text-primary hover:text-white' : 'text-muted-foreground cursor-not-allowed'
                       }`}
                     >
-                      {owned ? '[ ACQUIRED ]' : can ? '[ PURCHASE ]' : `[ SHORT ${eq.cost - data.user.coins} C ]`}
+                      {owned ? '[ ACQUIRED ]' : can ? '[ PURCHASE ]' : `[ SHORT ${cost - data.user.coins} C ]`}
                     </button>
                   </div>
                   <div className="h-[1px] w-full bg-white/5 mt-4" />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useAppStore, formatDateKey } from './store/useAppStore';
-import { DEFAULT_QUESTS, RANKS } from './lib/constants';
+import { useAppStore, formatDateKey, formatWeekKey } from './store/useAppStore';
+import { DEFAULT_QUESTS, RANKS, POSSIBLE_BOUNTIES } from './lib/constants';
 import { DashboardView } from './features/dashboard/DashboardView';
 import { CalendarView } from './features/calendar/CalendarView';
 import { YearView } from './features/calendar/YearView';
@@ -14,6 +14,8 @@ import { BossView } from './features/bosses/BossView';
 import { AchievementsView } from './features/achievements/AchievementsView';
 import { OnboardingView } from './features/onboarding/OnboardingView';
 import { SettingsView } from './features/settings/SettingsView';
+import { AwakeningView } from './features/awakening/AwakeningView';
+import { SkillTreeView } from './features/skills/SkillTreeView';
 import { vibrateLight } from './lib/haptics';
 
 export default function App() {
@@ -52,7 +54,9 @@ export default function App() {
     }
 
     const existing = new Set((data.backlogs || []).map(b => b.id));
-    const newBL = incomplete
+    const isVoidWalk = (data.user.unlockedPerks || []).includes('p_shadow_3');
+    
+    const newBL = isVoidWalk ? [] : incomplete
       .filter(q => !existing.has(q.id))
       .map(q => ({ id: q.id, name: q.name, xp: Math.floor(q.xp / 2), coins: Math.floor(q.coins / 2) }));
 
@@ -66,6 +70,25 @@ export default function App() {
       setData(d => ({ ...d, lastBacklogCheck: yesterday }));
     }
   }, [isReady, data.setupDone, data.lastBacklogCheck, data.dayData, data.backlogs, myQuests, setData]);
+
+  // Bounty generation
+  useEffect(() => {
+    if (!isReady || !data.setupDone) return;
+    const currentWeek = formatWeekKey(new Date());
+    
+    if (data.lastBountyRefresh !== currentWeek) {
+      // Pick 3 random bounties
+      const shuffled = [...POSSIBLE_BOUNTIES].sort(() => 0.5 - Math.random());
+      const newBounties = shuffled.slice(0, 3);
+      
+      setData(d => ({
+        ...d,
+        lastBountyRefresh: currentWeek,
+        bounties: newBounties,
+        completedBounties: []
+      }));
+    }
+  }, [isReady, data.setupDone, data.lastBountyRefresh, setData]);
 
   // Sync theme to body class
   useEffect(() => {
@@ -103,6 +126,7 @@ export default function App() {
     { id: 'notes', label: 'NOTES' },
     { id: 'health', label: 'HEALTH' },
     { id: 'finance', label: 'FINANCE' },
+    { id: 'skills', label: 'SKILLS' },
     { id: 'stats', label: 'STATS' },
     { id: 'awards', label: 'AWARDS' },
     { id: 'inventory', label: 'INVENTORY' },
@@ -154,13 +178,15 @@ export default function App() {
 
       {/* Main Content */}
       <div className="relative z-10 p-4 md:p-6 h-[calc(100vh-100px)] overflow-y-auto no-scrollbar">
-        {view === 'dash' && <DashboardView />}
+        {view === 'awakening' && <AwakeningView onComplete={() => setView('dash')} />}
+        {view === 'dash' && <DashboardView setView={setView} />}
         {view === 'cal' && <CalendarView />}
         {view === 'year' && <YearView />}
         {view === 'notes' && <NotesView toast={toast} />}
         {view === 'health' && <HealthView toast={toast} />}
-        {view === 'finance' && <FinanceView toast={toast} />}
-        {view === 'stats' && <StatsView />}
+        { view === 'finance' && <FinanceView toast={toast} /> }
+        { view === 'skills' && <SkillTreeView /> }
+        { view === 'stats' && <StatsView /> }
         {view === 'awards' && <AchievementsView />}
         {view === 'inventory' && <InventoryView toast={toast} />}
         {view === 'shop' && <ShopView toast={toast} />}

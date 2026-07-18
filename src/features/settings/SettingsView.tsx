@@ -20,7 +20,7 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast('✓ BACKUP EXPORTED');
+      toast('✓ ARCHIVE EXPORTED');
     } catch {
       toast('✗ EXPORT FAILED');
     }
@@ -35,13 +35,13 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
       try {
         const imported = JSON.parse(ev.target?.result as string) as AppState;
         if (!imported.user || !imported.setupDone) {
-          toast('✗ INVALID BACKUP FILE');
+          toast('✗ INVALID ARCHIVE FILE');
           return;
         }
         setData(() => ({ ...INITIAL_STATE, ...imported }));
-        toast('✓ DATA RESTORED SUCCESSFULLY');
+        toast('✓ SYSTEM RESTORED');
       } catch {
-        toast('✗ FAILED TO READ FILE');
+        toast('✗ FAILED TO READ ARCHIVE');
       }
     };
     reader.readAsText(file);
@@ -51,10 +51,9 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
   const resetAll = () => {
     setData(() => INITIAL_STATE);
     setShowReset(false);
-    toast('✓ ALL DATA RESET');
+    toast('✓ SYSTEM PURGED');
   };
 
-  // Calculate stats
   const totalDays = Object.keys(data.dayData || {}).length;
   const totalQuestsCompleted = Object.values(data.dayData || {}).reduce((sum, d) => sum + (d.quests?.length || 0), 0);
   const bossesDefeated = (data.bosses || []).reduce((sum, b) => {
@@ -86,68 +85,64 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
   };
 
   return (
-    <div className="animate-in fade-in flex flex-col gap-3">
-      {/* Profile Card */}
-      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4">
-        <div className="text-[11px] font-bold tracking-wide mb-3 flex items-center gap-1.5">
-          ⚙ HUNTER PROFILE
+    <div className="animate-in fade-in flex flex-col gap-16 max-w-4xl mx-auto z-10 relative pointer-events-auto h-full px-4 pt-10 pb-24 overflow-y-auto no-scrollbar">
+      
+      {/* Profile Metrics */}
+      <div>
+        <div className="text-[11px] text-muted-foreground tracking-[0.3em] uppercase mb-8">
+          System Identity
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">NAME</div>
-            <div className="text-[14px] font-bold tracking-wide">{data.user?.name || 'UNKNOWN'}</div>
-          </div>
-          <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">TOTAL XP</div>
-            <div className="text-[14px] font-bold tracking-wide">{(data.user?.totalXp || 0).toLocaleString()}</div>
-          </div>
-          <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">DAYS ACTIVE</div>
-            <div className="text-[14px] font-bold tracking-wide">{totalDays}</div>
-          </div>
-          <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">QUESTS DONE</div>
-            <div className="text-[14px] font-bold tracking-wide">{totalQuestsCompleted}</div>
-          </div>
-          <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">LONGEST STREAK</div>
-            <div className="text-[14px] font-bold tracking-wide">🔥 {data.user?.longestStreak || 0}D</div>
-          </div>
-          <div className="border border-border p-3">
-            <div className="text-[10px] text-muted-foreground tracking-wide uppercase mb-1">BOSSES SLAIN</div>
-            <div className="text-[14px] font-bold tracking-wide">☠ {bossesDefeated}</div>
-          </div>
+        <div className="flex flex-col gap-4">
+          {[
+            ['DESIGNATION', data.user?.name || 'UNKNOWN'],
+            ['TOTAL XP', (data.user?.totalXp || 0).toLocaleString()],
+            ['UPTIME (DAYS)', totalDays],
+            ['PROTOCOLS EXECUTED', totalQuestsCompleted],
+            ['MAXIMUM STREAK', data.user?.longestStreak || 0],
+            ['THREATS ELIMINATED', bossesDefeated]
+          ].map(([label, value]) => (
+            <div key={label as string} className="flex justify-between items-center border-b border-white/5 pb-2">
+              <span className="text-[11px] tracking-[0.2em] text-muted-foreground uppercase">{label}</span>
+              <span className="text-[12px] font-bold font-mono tracking-[0.1em] text-primary">{value as React.ReactNode}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Theme Selection */}
-      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4">
-        <div className="text-[11px] font-bold tracking-wide mb-3 flex items-center gap-1.5">
-          🎨 TERMINAL THEME
+      {/* Terminal Theme */}
+      <div>
+        <div className="text-[11px] text-muted-foreground tracking-[0.3em] uppercase mb-8">
+          Visual Interface
         </div>
-        <div className="grid grid-cols-1 gap-2">
+        <div className="flex flex-col gap-6">
           {THEMES.map(t => {
             const unlocked = (data.unlockedThemes || []).includes(t.id);
             const active = data.theme === t.id;
             const canAfford = data.user.coins >= t.cost;
             return (
-              <div key={t.id} className={`flex justify-between items-center p-3 border ${active ? 'border-foreground bg-foreground text-background' : 'border-border'}`}>
-                <div className="text-[11px] font-bold tracking-wide uppercase">{t.name}</div>
+              <div key={t.id} className="flex justify-between items-center border-b border-white/5 pb-2 transition-opacity hover:opacity-100 opacity-80">
+                <span className={`text-[12px] tracking-[0.2em] uppercase ${active ? 'text-primary font-bold' : 'text-foreground'}`}>
+                  {t.name}
+                </span>
                 {unlocked ? (
                   <button
                     onClick={() => selectTheme(t.id)}
                     disabled={active}
-                    className={`text-[10px] tracking-wide uppercase px-3 py-1 border transition-colors ${active ? 'border-background text-background' : 'border-border bg-background hover:bg-muted'}`}
+                    className={`text-[10px] tracking-[0.2em] uppercase font-bold transition-colors ${
+                      active ? 'text-primary cursor-default' : 'text-muted-foreground hover:text-white'
+                    }`}
                   >
-                    {active ? 'ACTIVE' : 'SELECT'}
+                    {active ? '[ ACTIVE ]' : '[ SELECT ]'}
                   </button>
                 ) : (
                   <button
                     onClick={() => purchaseTheme(t.id, t.cost)}
                     disabled={!canAfford}
-                    className={`text-[10px] tracking-wide uppercase px-3 py-1 border transition-colors ${canAfford ? 'border-foreground bg-foreground text-background hover:opacity-90' : 'border-border bg-muted text-muted-foreground opacity-50 cursor-not-allowed'}`}
+                    className={`text-[10px] tracking-[0.2em] uppercase font-bold transition-colors ${
+                      canAfford ? 'text-primary hover:text-white' : 'text-muted-foreground/30 cursor-not-allowed'
+                    }`}
                   >
-                    {t.cost} COINS
+                    [ ACQUIRE: {t.cost} C ]
                   </button>
                 )}
               </div>
@@ -156,28 +151,24 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
         </div>
       </div>
 
-      {/* Backup & Restore */}
-      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4">
-        <div className="text-[11px] font-bold tracking-wide mb-1 flex items-center gap-1.5">
-          💾 BACKUP & RESTORE
+      {/* Data Management */}
+      <div>
+        <div className="text-[11px] text-muted-foreground tracking-[0.3em] uppercase mb-8">
+          Data Preservation
         </div>
-        <div className="text-[10px] text-muted-foreground tracking-wide mb-4 uppercase">
-          Your data is stored locally. Export it to keep it safe.
-        </div>
-
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-6">
           <button
             onClick={exportData}
-            className="w-full p-3 bg-foreground text-background border border-foreground text-[11px] font-bold tracking-wide uppercase hover:opacity-90"
+            className="text-left text-[12px] font-bold tracking-[0.2em] uppercase text-foreground hover:text-primary transition-colors"
           >
-            ↓ EXPORT BACKUP
+            [ EXPORT ARCHIVE ]
           </button>
-
+          
           <button
             onClick={() => fileInput.current?.click()}
-            className="w-full p-3 bg-background border border-border text-[11px] font-bold tracking-wide uppercase hover:bg-muted"
+            className="text-left text-[12px] font-bold tracking-[0.2em] uppercase text-foreground hover:text-primary transition-colors"
           >
-            ↑ IMPORT BACKUP
+            [ RESTORE ARCHIVE ]
           </button>
           <input
             ref={fileInput}
@@ -190,49 +181,39 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-card border border-destructive p-4">
-        <div className="text-[11px] font-bold tracking-wide mb-1 flex items-center gap-1.5 text-destructive">
-          ⚠ DANGER ZONE
+      <div className="pt-10">
+        <div className="text-[11px] text-destructive tracking-[0.3em] uppercase mb-8">
+          Critical Operations
         </div>
-        <div className="text-[10px] text-muted-foreground tracking-wide mb-4 uppercase">
-          This will permanently erase all your progress.
-        </div>
-
         {!showReset ? (
           <button
             onClick={() => setShowReset(true)}
-            className="w-full p-3 border border-destructive text-destructive text-[11px] font-bold tracking-wide uppercase hover:bg-destructive hover:text-destructive-foreground transition-colors"
+            className="text-left text-[12px] font-bold tracking-[0.2em] uppercase text-destructive hover:text-white transition-colors"
           >
-            FACTORY RESET
+            [ PURGE SYSTEM DATA ]
           </button>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-8">
             <button
               onClick={() => setShowReset(false)}
-              className="flex-1 p-3 border border-border text-[11px] tracking-wide uppercase bg-background hover:bg-muted"
+              className="text-[12px] font-bold tracking-[0.2em] uppercase text-muted-foreground hover:text-white transition-colors"
             >
-              CANCEL
+              [ ABORT ]
             </button>
             <button
               onClick={resetAll}
-              className="flex-1 p-3 bg-destructive text-destructive-foreground border border-destructive text-[11px] font-bold tracking-wide uppercase"
+              className="text-[12px] font-bold tracking-[0.2em] uppercase text-destructive text-glow hover:text-white transition-colors"
             >
-              CONFIRM RESET
+              [ CONFIRM PURGE ]
             </button>
           </div>
         )}
       </div>
 
-      {/* App Info */}
-      <div className="bg-card border border-border/50 rounded-xl card-shadow p-4">
-        <div className="text-[11px] font-bold tracking-wide mb-3 flex items-center gap-1.5">
-          ℹ ABOUT
-        </div>
-        <div className="space-y-1 text-[11px] text-muted-foreground tracking-wide">
-          <div>APP: LEVELING UP v1.0</div>
-          <div>DATA: 100% OFFLINE</div>
-          <div>STORAGE: LOCAL INDEXEDDB</div>
-        </div>
+      {/* Info */}
+      <div className="mt-10 border-t border-white/5 pt-8 text-center text-[9px] text-muted-foreground/50 tracking-[0.3em] font-mono">
+        LEVELING UP v1.0<br/>
+        LOCAL STORAGE ARCHITECTURE
       </div>
     </div>
   );

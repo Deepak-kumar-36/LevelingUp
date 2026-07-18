@@ -48,8 +48,10 @@ export function getIntensity(completed: number, total: number): number {
 export function calculateStreak(
   dayData: AppState['dayData'],
   totalQuests: number,
+  hasGhostMode: boolean = false
 ): number {
   let streak = 0;
+  let missedDays = 0;
   const date = new Date();
   date.setHours(0, 0, 0, 0);
 
@@ -61,10 +63,16 @@ export function calculateStreak(
 
     if (ratio >= 0.7) {
       streak++;
-      date.setDate(date.getDate() - 1);
     } else {
-      break;
+      if (i === 0) {
+        // Today isn't complete yet, don't break the streak, but don't add to it.
+      } else if (hasGhostMode && missedDays === 0) {
+        missedDays++;
+      } else {
+        break;
+      }
     }
+    date.setDate(date.getDate() - 1);
   }
 
   return streak;
