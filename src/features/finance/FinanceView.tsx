@@ -4,9 +4,9 @@ import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, CATEGORY_COLORS } from '../../li
 import { vibrateLight, vibrateSuccess, vibrateError } from '../../lib/haptics';
 import type { Transaction, TransactionType } from '../../types';
 import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip as RechartsTooltip, PieChart, Pie, Cell } from 'recharts';
-import { Terminal, Database, Shield, Activity, Plus, Trash2, Crosshair, Zap } from 'lucide-react';
+import { Terminal, Database, Activity, Plus, Trash2, Crosshair, Zap } from 'lucide-react';
 
-type TreasuryTab = 'DASHBOARD' | 'LEDGER' | 'POOLS' | 'ANALYTICS';
+type TreasuryTab = 'DASHBOARD' | 'LEDGER' | 'ANALYTICS';
 
 export function FinanceView({ toast }: { toast: (msg: string) => void }) {
   const { data, setData } = useAppStore();
@@ -16,7 +16,6 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
   
   const fin = data.finance || { transactions: [], budgets: [], meta: { logStreak: 0, lastLogDate: null }, monthlyBudget: 5000 };
   const transactions = fin.transactions || [];
-  const budgets = fin.budgets || [];
   const meta = fin.meta || { logStreak: 0, lastLogDate: null };
 
   // Month Filtering (Default to Current Month)
@@ -80,7 +79,7 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
       const F = d.finance || { transactions: [], budgets: [], meta: { logStreak: 0, lastLogDate: null }, monthlyBudget: 5000 };
       return { 
         ...d, 
-        user: { ...d.user, totalXp: d.user.totalXp + 5 }, // +5 XP per log
+        user: { ...d.user, totalXp: d.user.totalXp + 5 },
         finance: { 
           ...F, 
           transactions: [t, ...(F.transactions || [])],
@@ -103,26 +102,6 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
       return { ...d, finance: { ...F, transactions: (F.transactions || []).filter(x => x.id !== id) } };
     });
     toast('✓ ENTRY PURGED');
-  };
-
-  // Pools State
-  const [poolCat, setPoolCat] = useState(EXPENSE_CATEGORIES[0] as string);
-  const [poolLimit, setPoolLimit] = useState('');
-  
-  const savePool = () => {
-    const l = parseFloat(poolLimit);
-    if (isNaN(l) || l < 0) return;
-    vibrateLight();
-    setData(d => {
-      const F = d.finance;
-      const b = [...(F.budgets || [])];
-      const idx = b.findIndex(x => x.categoryId === poolCat);
-      if (idx >= 0) b[idx].limitAmount = l;
-      else b.push({ categoryId: poolCat, limitAmount: l });
-      return { ...d, finance: { ...F, budgets: b } };
-    });
-    setPoolLimit('');
-    toast('✓ RESOURCE POOL UPDATED');
   };
 
   // Analytics Data
@@ -154,7 +133,7 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
       
       {/* Header Tabs */}
       <div className="flex bg-black/60 border border-white/10 mb-4 sticky top-0 z-20">
-        {(['DASHBOARD', 'LEDGER', 'POOLS', 'ANALYTICS'] as TreasuryTab[]).map(t => (
+        {(['DASHBOARD', 'LEDGER', 'ANALYTICS'] as TreasuryTab[]).map(t => (
           <button
             key={t}
             onClick={() => { vibrateLight(); setTab(t); }}
@@ -164,7 +143,6 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
           >
             {t === 'DASHBOARD' && <Terminal size={14} className="hidden md:block" />}
             {t === 'LEDGER' && <Database size={14} className="hidden md:block" />}
-            {t === 'POOLS' && <Shield size={14} className="hidden md:block" />}
             {t === 'ANALYTICS' && <Activity size={14} className="hidden md:block" />}
             <span className="hidden sm:inline">{t}</span>
             <span className="sm:hidden">{t.substring(0, 3)}</span>
@@ -237,12 +215,12 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
         )}
 
         {/* =========================================================================
-            LEDGER
+            LEDGER (BRUTALIST TERMINAL VIEW)
         ========================================================================== */}
         {tab === 'LEDGER' && (
           <div className="animate-in fade-in flex flex-col gap-4 max-w-4xl mx-auto w-full p-2">
             <div className="flex justify-between items-center border-b border-white/10 pb-4 mb-2">
-              <div className="text-[12px] text-primary tracking-[0.3em] font-bold">GOLD LEDGER</div>
+              <div className="text-[12px] text-primary tracking-[0.3em] font-bold">RAW LEDGER DATA</div>
               <div className="flex gap-2">
                 <button onClick={() => setMDate(new Date(mDate.getFullYear(), mDate.getMonth() - 1, 1))} className="px-2 py-1 border border-white/10 text-[10px] hover:bg-white/10">&lt;</button>
                 <div className="px-4 py-1 border border-white/10 text-[10px] tracking-[0.2em] font-bold bg-white/5">{mk}</div>
@@ -255,96 +233,28 @@ export function FinanceView({ toast }: { toast: (msg: string) => void }) {
                 NO RECORDS IN THIS CYCLE.
               </div>
             ) : (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-[2px] bg-black/60 p-4 border border-white/10 overflow-x-auto whitespace-nowrap text-[11px] md:text-[13px] tracking-wider font-mono">
                 {mTrans.map(t => (
-                  <div key={t.id} className="flex flex-col md:flex-row justify-between border-l-2 border border-white/5 bg-black/40 p-4 hover:bg-white/5 transition-colors group" style={{ borderLeftColor: CATEGORY_COLORS[t.category] || '#fff' }}>
-                    <div className="flex flex-col">
-                      <span className="text-[13px] font-bold tracking-[0.1em] uppercase text-foreground">{t.desc}</span>
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className="text-[9px] px-2 py-0.5 border border-white/10 bg-black/50 tracking-[0.1em] uppercase" style={{ color: CATEGORY_COLORS[t.category] || '#fff' }}>
-                          {t.category}
-                        </span>
-                        <span className="text-[9px] text-muted-foreground tracking-[0.1em]">{t.date}</span>
-                      </div>
-                    </div>
-                    <div className="flex md:flex-col justify-between items-center md:items-end mt-4 md:mt-0">
-                      <span className={`text-[15px] font-bold tracking-[0.1em] ${t.type === 'INCOME' ? 'text-[#34d399]' : 'text-destructive'}`}>
-                        {t.type === 'INCOME' ? '+' : '-'}₹{t.amount.toLocaleString()}
-                      </span>
-                      <button 
-                        onClick={() => deleteTransaction(t.id)}
-                        className="text-muted-foreground hover:text-destructive transition-colors md:opacity-0 group-hover:opacity-100 p-2 md:p-0"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                  <div key={t.id} className="flex items-center gap-4 hover:bg-white/5 py-1 px-2 group transition-colors">
+                    <span className="text-muted-foreground/50 w-[80px] shrink-0">[{t.date}]</span>
+                    <span className="w-[120px] shrink-0 font-bold" style={{ color: CATEGORY_COLORS[t.category] || '#fff' }}>
+                      :: {t.category}
+                    </span>
+                    <span className="flex-1 min-w-[150px] truncate text-foreground/80">{t.desc}</span>
+                    <span className={`w-[100px] text-right font-bold shrink-0 ${t.type === 'INCOME' ? 'text-[#34d399]' : 'text-destructive'}`}>
+                      {t.type === 'INCOME' ? '+' : '-'}₹{t.amount.toLocaleString()}
+                    </span>
+                    <button 
+                      onClick={() => deleteTransaction(t.id)}
+                      className="text-destructive/50 hover:text-destructive shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ml-4"
+                      title="Purge Record"
+                    >
+                      <Trash2 size={12} />
+                    </button>
                   </div>
                 ))}
               </div>
             )}
-          </div>
-        )}
-
-        {/* =========================================================================
-            POOLS (BUDGETS)
-        ========================================================================== */}
-        {tab === 'POOLS' && (
-          <div className="animate-in fade-in flex flex-col gap-6 max-w-4xl mx-auto w-full p-2">
-            
-            <div className="border border-white/10 bg-black/60 p-4 md:p-6">
-              <div className="text-[10px] text-primary tracking-[0.2em] font-bold mb-4 uppercase flex items-center gap-2">
-                <Shield size={14} /> CONFIGURE RESOURCE POOL
-              </div>
-              <div className="flex flex-col md:flex-row gap-4 items-end">
-                <div className="flex-1 w-full">
-                  <label className="text-[9px] text-muted-foreground tracking-[0.2em] uppercase block mb-2">ARSENAL CLASS</label>
-                  <select value={poolCat} onChange={e => setPoolCat(e.target.value)} className="w-full bg-black/80 border border-white/20 p-3 text-[11px] tracking-[0.1em] uppercase text-foreground focus:border-primary focus:outline-none">
-                    {EXPENSE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div className="flex-1 w-full">
-                  <label className="text-[9px] text-muted-foreground tracking-[0.2em] uppercase block mb-2">CAPACITY LIMIT (₹)</label>
-                  <input type="number" value={poolLimit} onChange={e => setPoolLimit(e.target.value)} className="w-full bg-black/80 border border-white/20 p-3 text-[14px] font-bold tracking-[0.1em] uppercase text-foreground focus:border-primary focus:outline-none" placeholder="0" />
-                </div>
-                <button onClick={savePool} className="w-full md:w-auto px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-black font-bold tracking-[0.2em] text-[11px] uppercase transition-all">
-                  SAVE POOL
-                </button>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4 mt-4">
-              {EXPENSE_CATEGORIES.map(cat => {
-                const b = budgets.find(x => x.categoryId === cat);
-                if (!b) return null;
-                const spent = mTrans.filter(t => t.type === 'EXPENSE' && t.category === cat).reduce((a, t) => a + t.amount, 0);
-                const pct = (spent / b.limitAmount) * 100;
-                let colorClass = 'bg-[#10b981]'; // safe
-                if (pct > 75) colorClass = 'bg-[#f59e0b]'; // warn
-                if (pct > 90) colorClass = 'bg-destructive shadow-[0_0_15px_rgba(239,68,68,0.5)]'; // critical
-                
-                return (
-                  <div key={cat} className="border border-white/10 bg-black/40 p-4">
-                    <div className="flex justify-between items-center mb-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 border" style={{ borderColor: CATEGORY_COLORS[cat] }} />
-                        <span className="text-[12px] font-bold tracking-[0.2em] uppercase">{cat}</span>
-                      </div>
-                      <div className="text-[10px] tracking-[0.1em] uppercase font-mono">
-                        <span className={pct > 100 ? 'text-destructive' : 'text-foreground'}>{spent.toLocaleString()}</span> / {b.limitAmount.toLocaleString()}
-                      </div>
-                    </div>
-                    <div className={`h-[8px] w-full bg-black border border-white/10 relative overflow-hidden ${pct > 100 ? 'glitch-bar' : ''}`}>
-                      <div className={`absolute top-0 left-0 h-full transition-all duration-1000 ${colorClass}`} style={{ width: `${Math.min(100, pct)}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
-              {budgets.length === 0 && (
-                <div className="text-[10px] text-muted-foreground/30 tracking-[0.3em] uppercase text-center mt-10">
-                  NO POOLS CONFIGURED.
-                </div>
-              )}
-            </div>
           </div>
         )}
 
