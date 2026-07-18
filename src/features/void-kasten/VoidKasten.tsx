@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useAppStore, generateId } from '../../store/useAppStore';
 import { NoteList } from './components/NoteList';
 import { NoteEditor } from './components/NoteEditor';

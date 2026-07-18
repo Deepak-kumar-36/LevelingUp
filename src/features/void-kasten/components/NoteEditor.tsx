@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { extractLinks, extractTags } from '../utils/markdown';
 import { generateId } from '../../../store/useAppStore';
 import type { Note, NoteLink, AppState } from '../../../types';
-import { Eye, Edit2, Link as LinkIcon, Trash2 } from 'lucide-react';
+import { Eye, Edit2, Link as LinkIcon, Trash2, Plus } from 'lucide-react';
 import { vibrateLight, vibrateSuccess } from '../../../lib/haptics';
 
 interface NoteEditorProps {

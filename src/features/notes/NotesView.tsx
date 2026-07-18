@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { VoidKasten } from '../void-kasten/VoidKasten';
 import { useAppStore } from '../../store/useAppStore';
 

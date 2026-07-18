@@ -1,5 +1,6 @@
-import React, { useState, useMemo, useCallback, useRef } from 'react';
-import ForceGraph2D, { ForceGraphMethods } from 'react-force-graph-2d';
+import { useState, useMemo, useCallback, useRef } from 'react';
+import ForceGraph2D from 'react-force-graph-2d';
+import type { ForceGraphMethods } from 'react-force-graph-2d';
 import type { Note, NoteLink } from '../../../types';
 
 interface GraphViewProps {
@@ -9,7 +10,7 @@ interface GraphViewProps {
 }
 
 export function GraphView({ notes, links, onNodeClick }: GraphViewProps) {
-  const fgRef = useRef<ForceGraphMethods>();
+  const fgRef = useRef<ForceGraphMethods>(null);
   
   // Hover State
   const [hoverNode, setHoverNode] = useState<any>(null);

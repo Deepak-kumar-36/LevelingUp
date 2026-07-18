@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useAppStore, formatDateKey } from '../../store/useAppStore';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, CATEGORY_COLORS } from '../../lib/constants';
 import { vibrateLight, vibrateSuccess, vibrateError } from '../../lib/haptics';

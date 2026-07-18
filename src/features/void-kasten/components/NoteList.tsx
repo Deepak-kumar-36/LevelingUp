@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, Plus, Hash } from 'lucide-react';
 import type { Note, NoteLink } from '../../../types';
 
