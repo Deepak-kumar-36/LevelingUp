@@ -259,6 +259,7 @@ export const INITIAL_STATE: AppState = {
   backlogs: [],
   redeemed: [],
   notes: [],
+  links: [],
   health: {
     weights: [],
     foodLogs: [],

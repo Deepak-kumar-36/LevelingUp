@@ -200,7 +200,17 @@ export interface Note {
   id: string;
   title: string;
   body: string;
-  date: string;
+  date: string; // legacy fallback
+  tags?: string[];
+  createdAt?: number;
+  updatedAt?: number;
+}
+
+export interface NoteLink {
+  id: string;
+  sourceNoteId: string;
+  targetNoteId: string;
+  createdAt: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -237,6 +247,7 @@ export interface AppState {
   backlogs: BacklogItem[];
   redeemed: string[];
   notes: Note[];
+  links?: NoteLink[];
   health: HealthData;
   finance: FinanceData;
   bosses: Boss[];
