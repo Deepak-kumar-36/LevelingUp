@@ -1,214 +1,55 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useAppStore, formatDateKey, generateId } from '../../store/useAppStore';
 import { vibrateLight, vibrateSuccess, vibrateError } from '../../lib/haptics';
 import type { Note } from '../../types';
-import { Search, Plus, Edit2, Network, Link as LinkIcon, Trash2 } from 'lucide-react';
+import { Search, Plus, Edit2, Network, Link as LinkIcon, Trash2, Download, Upload } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import ForceGraph2D from 'react-force-graph-2d';
+import JSZip from 'jszip';
 
-// --- Markdown Parsers ---
-const extractLinks = (text: string) => {
-  const regex = /\[\[(.*?)\]\]/g;
-  const links: string[] = [];
-  let match;
-  while ((match = regex.exec(text)) !== null) {
-    links.push(match[1].trim().toUpperCase());
-  }
-  return [...new Set(links)];
-};
+// --- Markdown Rendering ---
+const WikiLinkMarkdown = ({ content, onLinkClick }: { content: string, onLinkClick: (t: string) => void }) => {
+  const processed = useMemo(() => {
+    return content.replace(/\[\[(.*?)\]\]/g, '[$1](wikilink:$1)');
+  }, [content]);
 
-const renderLine = (line: string, onLinkClick: (t: string) => void) => {
-  const parts = line.split(/(\[\[.*?\]\]|\*\*.*?\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith('[[') && part.endsWith(']]')) {
-      const link = part.slice(2, -2).trim().toUpperCase();
-      return (
-        <span 
-          key={i} 
-          onClick={() => onLinkClick(link)}
-          className="text-primary cursor-pointer font-bold transition-all hover:text-white"
-        >
-          {part}
-        </span>
-      );
-    }
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <span key={i} className="font-bold text-foreground text-glow">{part.slice(2, -2)}</span>;
-    }
-    return <span key={i} className="opacity-80">{part}</span>;
-  });
-};
-
-const MarkdownPreview = ({ content, onLinkClick }: { content: string, onLinkClick: (t: string) => void }) => {
-  const lines = content.split('\n');
   return (
-    <div className="flex flex-col gap-2 font-mono text-[13px] leading-relaxed break-words whitespace-pre-wrap">
-      {lines.map((line, i) => {
-        if (line.startsWith('# ')) return <h1 key={i} className="text-[20px] font-bold text-primary tracking-[0.1em] mt-6 mb-2 uppercase">{renderLine(line.substring(2), onLinkClick)}</h1>;
-        if (line.startsWith('## ')) return <h2 key={i} className="text-[16px] font-bold text-foreground tracking-[0.1em] mt-4 mb-1 uppercase">{renderLine(line.substring(3), onLinkClick)}</h2>;
-        if (line.startsWith('- ')) return <div key={i} className="flex gap-3 items-start"><span className="text-primary opacity-50 mt-1">◇</span><span>{renderLine(line.substring(2), onLinkClick)}</span></div>;
-        if (line.startsWith('> ')) return <div key={i} className="border-l-2 border-primary/50 pl-4 py-1 my-2 text-muted-foreground italic">{renderLine(line.substring(2), onLinkClick)}</div>;
-        if (line.trim() === '') return <div key={i} className="h-3" />;
-        return <div key={i}>{renderLine(line, onLinkClick)}</div>;
-      })}
+    <div className="font-mono text-[13px] leading-loose text-foreground/90 break-words max-w-none
+      [&>p]:mb-4 
+      [&>h1]:text-[20px] [&>h1]:font-bold [&>h1]:text-primary [&>h1]:mb-4 [&>h1]:tracking-[0.1em] [&>h1]:uppercase
+      [&>h2]:text-[16px] [&>h2]:font-bold [&>h2]:mb-3 [&>h2]:tracking-[0.1em] [&>h2]:uppercase
+      [&>h3]:text-[14px] [&>h3]:font-bold [&>h3]:mb-2
+      [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-4 [&>ul>li]:pl-2
+      [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-4 
+      [&>blockquote]:border-l-2 [&>blockquote]:border-primary/50 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-muted-foreground [&>blockquote]:my-4
+      [&>pre]:bg-black/60 [&>pre]:p-4 [&>pre]:border [&>pre]:border-white/10 [&>pre]:overflow-x-auto [&>pre]:mb-4
+      [&_code]:bg-white/5 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-primary
+      [&>table]:w-full [&>table]:mb-4 [&>table]:border-collapse [&_th]:border [&_th]:border-white/10 [&_th]:p-2 [&_th]:bg-black/50 [&_td]:border [&_td]:border-white/10 [&_td]:p-2
+    ">
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ ...props }) => {
+            if (props.href?.startsWith('wikilink:')) {
+              const link = props.href.replace('wikilink:', '').toUpperCase();
+              return (
+                <span 
+                  onClick={() => onLinkClick(link)}
+                  className="text-primary cursor-pointer font-bold transition-all hover:text-white hover:underline text-glow"
+                >
+                  [[{props.children}]]
+                </span>
+              );
+            }
+            return <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline" />;
+          }
+        }}
+      >
+        {processed}
+      </ReactMarkdown>
     </div>
   );
-};
-
-// --- Custom Physics Graph ---
-const GraphView = ({ notes, onNodeClick }: { notes: Note[], onNodeClick: (t: string) => void }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    // Scale canvas for retina displays
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-
-    const nodes = notes.map(n => ({ 
-      id: n.id, 
-      title: n.title, 
-      x: Math.random() * canvas.width, 
-      y: Math.random() * canvas.height, 
-      vx: 0, 
-      vy: 0 
-    }));
-    
-    const edges: {source: string, target: string}[] = [];
-    notes.forEach(n => {
-      const links = extractLinks(n.body || '');
-      links.forEach(l => {
-        const target = nodes.find(x => x.title === l);
-        if (target) edges.push({ source: n.id, target: target.id });
-      });
-    });
-
-    let animationFrameId: number;
-
-    const simulate = () => {
-      const k = 0.02; // spring constant
-      const maxForce = 3;
-
-      nodes.forEach(n => { n.vx *= 0.8; n.vy *= 0.8; }); // damping
-
-      // Spring force
-      edges.forEach(e => {
-        const s = nodes.find(x => x.id === e.source);
-        const t = nodes.find(x => x.id === e.target);
-        if (s && t) {
-          const dx = t.x - s.x;
-          const dy = t.y - s.y;
-          const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-          const force = (dist - 80) * k;
-          const fx = (dx / dist) * force;
-          const fy = (dy / dist) * force;
-          s.vx += fx; s.vy += fy;
-          t.vx -= fx; t.vy -= fy;
-        }
-      });
-
-      // Repulsion
-      for(let i=0; i<nodes.length; i++) {
-        for(let j=i+1; j<nodes.length; j++) {
-          const a = nodes[i];
-          const b = nodes[j];
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
-          const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-          if (dist < 150) {
-            const force = -800 / (dist * dist);
-            const fx = (dx / dist) * force;
-            const fy = (dy / dist) * force;
-            a.vx += fx; a.vy += fy;
-            b.vx -= fx; b.vy -= fy;
-          }
-        }
-      }
-
-      // Center gravity
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-      nodes.forEach(n => {
-        const dx = cx - n.x;
-        const dy = cy - n.y;
-        n.vx += dx * 0.005;
-        n.vy += dy * 0.005;
-      });
-
-      // Update positions
-      nodes.forEach(n => {
-        n.vx = Math.max(-maxForce, Math.min(maxForce, n.vx));
-        n.vy = Math.max(-maxForce, Math.min(maxForce, n.vy));
-        n.x += n.vx;
-        n.y += n.vy;
-      });
-
-      // Draw
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw edges
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-      ctx.lineWidth = 1;
-      edges.forEach(e => {
-        const s = nodes.find(x => x.id === e.source);
-        const t = nodes.find(x => x.id === e.target);
-        if (s && t) {
-          ctx.beginPath();
-          ctx.moveTo(s.x, s.y);
-          ctx.lineTo(t.x, t.y);
-          ctx.stroke();
-        }
-      });
-
-      // Draw nodes
-      nodes.forEach(n => {
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#4ade80'; 
-        ctx.fill();
-        
-        ctx.fillStyle = 'rgba(255,255,255,0.7)';
-        ctx.font = '10px monospace';
-        ctx.fillText(n.title, n.x + 8, n.y + 4);
-      });
-
-      animationFrameId = requestAnimationFrame(simulate);
-    };
-
-    simulate();
-    
-    // Minimal click detection
-    const handleClick = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      // Find closest node
-      let closest: string | null = null;
-      let minDist = 20; // click radius
-      
-      nodes.forEach(n => {
-        const dist = Math.sqrt(Math.pow(n.x - x, 2) + Math.pow(n.y - y, 2));
-        if (dist < minDist) {
-          minDist = dist;
-          closest = n.title;
-        }
-      });
-      
-      if (closest) onNodeClick(closest);
-    };
-    
-    canvas.addEventListener('click', handleClick);
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      canvas.removeEventListener('click', handleClick);
-    };
-  }, [notes, onNodeClick]);
-
-  return <canvas ref={canvasRef} className="w-full h-full bg-black/50 border border-white/5 cursor-crosshair rounded-sm" />;
 };
 
 // --- Main View ---
@@ -224,10 +65,37 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
   
   const [mode, setMode] = useState<'PREVIEW' | 'EDIT'>('PREVIEW');
   const [rightPanel, setRightPanel] = useState<'BACKLINKS' | 'GRAPH'>('GRAPH');
+  
   const [showLeft, setShowLeft] = useState(true);
-  const [showRight, setShowRight] = useState(false); // Default hidden on smaller screens to save space
+  const [showRight, setShowRight] = useState(false);
+  
+  const [graphDim, setGraphDim] = useState({ width: 0, height: 0 });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const graphContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!graphContainerRef.current) return;
+    const ro = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        setGraphDim({ width: entry.contentRect.width, height: entry.contentRect.height });
+      }
+    });
+    ro.observe(graphContainerRef.current);
+    return () => ro.disconnect();
+  }, [rightPanel]);
 
   const selNote = notes.find(n => n.id === selId);
+
+  // Parse links for backlinks and graph
+  const extractLinks = useCallback((text: string) => {
+    const regex = /\[\[(.*?)\]\]/g;
+    const links: string[] = [];
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      links.push(match[1].trim().toUpperCase());
+    }
+    return [...new Set(links)];
+  }, []);
 
   const filteredNotes = useMemo(() => {
     const q = search.toLowerCase();
@@ -238,9 +106,23 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
   const backlinks = useMemo(() => {
     if (!selNote) return [];
     return notes.filter(n => n.id !== selNote.id && extractLinks(n.body).includes(selNote.title));
-  }, [notes, selNote]);
+  }, [notes, selNote, extractLinks]);
 
-  const navigateToNote = (title: string) => {
+  // Graph Data structure for react-force-graph-2d
+  const graphData = useMemo(() => {
+    const nodes = notes.map(n => ({ id: n.id, name: n.title }));
+    const links: { source: string, target: string }[] = [];
+    notes.forEach(n => {
+      const extracted = extractLinks(n.body);
+      extracted.forEach(l => {
+        const target = notes.find(x => x.title === l);
+        if (target) links.push({ source: n.id, target: target.id });
+      });
+    });
+    return { nodes, links };
+  }, [notes, extractLinks]);
+
+  const navigateToNote = useCallback((title: string) => {
     vibrateLight();
     const existing = notes.find(n => n.title === title);
     if (existing) {
@@ -249,7 +131,6 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
       setFContent(existing.body);
       setMode('PREVIEW');
     } else {
-      // Create it instantly to satisfy the zettelkasten flow
       const nn: Note = { id: `n_${generateId()}`, title: title, body: '', date: formatDateKey(new Date()) };
       setData(d => ({ ...d, notes: [nn, ...(d.notes ?? [])] }));
       setSelId(nn.id);
@@ -258,7 +139,12 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
       setMode('EDIT');
       toast(`✓ NEW NODE CREATED: ${title}`);
     }
-  };
+    // Auto-switch to editor view on mobile
+    if (window.innerWidth < 768) {
+      setShowLeft(false);
+      setShowRight(false);
+    }
+  }, [notes, setData, toast]);
 
   const startNew = () => { 
     vibrateLight();
@@ -266,6 +152,10 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
     setFTitle(''); 
     setFContent(''); 
     setMode('EDIT'); 
+    if (window.innerWidth < 768) {
+      setShowLeft(false);
+      setShowRight(false);
+    }
   };
 
   const pickNote = (n: Note) => { 
@@ -309,6 +199,59 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
     toast('✓ NODE PURGED');
   };
 
+  // --- Storage Functions ---
+  const exportVault = async () => {
+    vibrateLight();
+    try {
+      const zip = new JSZip();
+      notes.forEach(n => {
+        const safeTitle = n.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        zip.file(`${safeTitle}.md`, n.body || '');
+      });
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `void_vault_${formatDateKey(new Date())}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('✓ VAULT EXPORTED');
+    } catch {
+      toast('✗ EXPORT FAILED');
+    }
+  };
+
+  const importFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    vibrateLight();
+    const files = Array.from(e.target.files);
+    let imported = 0;
+    const newNotes: Note[] = [];
+    
+    for (const file of files) {
+      if (file.name.endsWith('.md') || file.name.endsWith('.txt')) {
+        const text = await file.text();
+        const title = file.name.replace(/\.(md|txt)$/, '').toUpperCase();
+        
+        // Skip if title already exists to prevent pure duplicates, or append
+        newNotes.push({
+          id: `n_${generateId()}`,
+          title: title,
+          body: text,
+          date: formatDateKey(new Date())
+        });
+        imported++;
+      }
+    }
+    
+    if (imported > 0) {
+      setData(d => ({ ...d, notes: [...newNotes, ...(d.notes ?? [])] }));
+      vibrateSuccess();
+      toast(`✓ IMPORTED ${imported} NODES`);
+    }
+    e.target.value = '';
+  };
+
   return (
     <div className="absolute inset-0 flex flex-col md:flex-row font-mono bg-black text-foreground overflow-hidden pointer-events-auto z-10 p-2 md:p-4 gap-4">
       
@@ -316,9 +259,18 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
       <div className={`flex flex-col border border-white/10 bg-black/50 ${showLeft ? 'flex-[0.4] md:flex-[0.3]' : 'hidden md:flex flex-[0.3]'} min-w-[250px] transition-all`}>
         <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
           <div className="text-[11px] tracking-[0.3em] uppercase font-bold text-muted-foreground">The Index</div>
-          <button onClick={startNew} className="text-primary hover:text-white transition-colors">
-            <Plus size={16} />
-          </button>
+          <div className="flex gap-3">
+            <button onClick={() => fileInputRef.current?.click()} className="text-muted-foreground hover:text-white transition-colors" title="Import .md files">
+              <Upload size={14} />
+            </button>
+            <input type="file" ref={fileInputRef} onChange={importFiles} multiple accept=".md,.txt" className="hidden" />
+            <button onClick={exportVault} className="text-muted-foreground hover:text-white transition-colors" title="Export Vault as .zip">
+              <Download size={14} />
+            </button>
+            <button onClick={startNew} className="text-primary hover:text-white transition-colors ml-1" title="New Note">
+              <Plus size={16} />
+            </button>
+          </div>
         </div>
         
         <div className="p-3 border-b border-white/5 flex gap-2 items-center bg-black/30">
@@ -347,7 +299,7 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
                 }`}
               >
                 <div className="flex justify-between items-center mb-1">
-                  <span className={`text-[12px] font-bold tracking-[0.1em] uppercase ${selId === n.id ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>
+                  <span className={`text-[12px] font-bold tracking-[0.1em] uppercase truncate ${selId === n.id ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>
                     {n.title}
                   </span>
                 </div>
@@ -362,12 +314,12 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
 
       {/* CENTER PANEL: The Editor/Viewer */}
       <div className={`flex-1 flex flex-col border border-white/10 bg-[#050505] relative ${!showLeft && !showRight && !selId ? 'hidden md:flex' : (showLeft && window.innerWidth < 768) ? 'hidden' : (showRight && window.innerWidth < 768) ? 'hidden' : 'flex'}`}>
-        {/* Mobile Header (only visible when Left Panel is hidden) */}
+        
         <div className="md:hidden p-3 border-b border-white/10 flex justify-between bg-white/5">
-          <button onClick={() => { setShowLeft(true); setShowRight(false); }} className="text-[10px] tracking-[0.2em] text-primary uppercase">
+          <button onClick={() => { setShowLeft(true); setShowRight(false); }} className="text-[10px] tracking-[0.2em] text-primary uppercase flex items-center gap-1">
             &lt; INDEX
           </button>
-          <button onClick={() => { setShowRight(true); setShowLeft(false); }} className="text-[10px] tracking-[0.2em] text-primary uppercase">
+          <button onClick={() => { setShowRight(true); setShowLeft(false); }} className="text-[10px] tracking-[0.2em] text-primary uppercase flex items-center gap-1">
             NETWORK &gt;
           </button>
         </div>
@@ -422,23 +374,23 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
               </div>
             </div>
             
-            <div className="flex-1 p-6 overflow-y-auto no-scrollbar relative">
+            <div className="flex-1 p-4 md:p-8 overflow-y-auto no-scrollbar relative">
               {mode === 'EDIT' ? (
                 <textarea
                   value={fContent}
                   onChange={e => setFContent(e.target.value)}
-                  className="w-full h-full bg-transparent border-none focus:outline-none text-[13px] tracking-wide text-foreground/90 font-mono resize-none leading-loose"
-                  placeholder="Initiate data stream... Use [[Title]] to create neural links."
+                  className="w-full h-full bg-transparent border-none focus:outline-none text-[14px] tracking-wide text-foreground/90 font-mono resize-none leading-loose"
+                  placeholder="Initiate data stream... Use [[Title]] to create neural links. Markdown supported."
                 />
               ) : (
-                <MarkdownPreview content={fContent} onLinkClick={navigateToNote} />
+                <WikiLinkMarkdown content={fContent} onLinkClick={navigateToNote} />
               )}
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center opacity-30 gap-4">
+          <div className="flex-1 flex flex-col items-center justify-center opacity-30 gap-4 p-4 text-center">
             <Network size={48} className="text-primary" />
-            <div className="text-[11px] tracking-[0.4em] uppercase text-center leading-loose">
+            <div className="text-[11px] tracking-[0.4em] uppercase leading-loose">
               NO NODE SELECTED.<br/>
               AWAITING INPUT...
             </div>
@@ -448,14 +400,13 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
 
       {/* RIGHT PANEL: The Network (Graph / Backlinks) */}
       <div className={`${showRight ? 'flex' : 'hidden'} flex-col flex-[0.35] border border-white/10 bg-black/50 min-w-[250px] transition-all`}>
-        {/* Mobile Header */}
         <div className="md:hidden p-3 border-b border-white/10 flex justify-start bg-white/5">
           <button onClick={() => { setShowRight(false); setShowLeft(false); }} className="text-[10px] tracking-[0.2em] text-primary uppercase">
             &lt; BACK TO EDITOR
           </button>
         </div>
 
-        <div className="flex bg-white/5 border-b border-white/10">
+        <div className="flex bg-white/5 border-b border-white/10 shrink-0">
           {(['BACKLINKS', 'GRAPH'] as const).map(p => (
             <button
               key={p}
@@ -469,15 +420,43 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
           ))}
         </div>
 
-        <div className="flex-1 p-4 overflow-y-auto no-scrollbar relative">
+        <div className="flex-1 overflow-hidden relative bg-[#0a0a0a]" ref={graphContainerRef}>
           {rightPanel === 'GRAPH' && (
-            <div className="absolute inset-4">
-              <GraphView notes={notes} onNodeClick={navigateToNote} />
+            <div className="absolute inset-0">
+              {graphDim.width > 0 && graphDim.height > 0 && (
+                <ForceGraph2D
+                  width={graphDim.width}
+                  height={graphDim.height}
+                  graphData={graphData}
+                  nodeLabel="name"
+                  nodeColor={() => '#4ade80'}
+                  linkColor={() => 'rgba(255,255,255,0.2)'}
+                  backgroundColor="#0a0a0a"
+                  onNodeClick={(node) => navigateToNote(node.name as string)}
+                  nodeCanvasObject={(node, ctx, globalScale) => {
+                    const label = node.name as string;
+                    const fontSize = 12 / globalScale;
+                    ctx.font = `${fontSize}px monospace`;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    // Draw dot
+                    ctx.beginPath();
+                    ctx.arc(node.x as number, node.y as number, 4 / globalScale, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = '#4ade80';
+                    ctx.fill();
+                    
+                    // Draw text
+                    ctx.fillText(label, node.x as number, (node.y as number) + (8 / globalScale));
+                  }}
+                />
+              )}
             </div>
           )}
           
           {rightPanel === 'BACKLINKS' && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 p-4 h-full overflow-y-auto no-scrollbar">
               {!selNote ? (
                 <div className="text-[10px] text-muted-foreground/40 tracking-[0.2em] text-center mt-10 uppercase">
                   SELECT A NODE TO VIEW CONNECTIONS
@@ -495,10 +474,9 @@ export function NotesView({ toast }: { toast: (msg: string) => void }) {
                     <button 
                       key={b.id} 
                       onClick={() => navigateToNote(b.title)}
-                      className="text-left p-3 border border-white/10 bg-black/40 hover:border-primary/50 transition-colors group"
+                      className="text-left p-3 border border-white/10 bg-black/40 hover:border-primary/50 transition-colors group rounded-sm"
                     >
-                      <div className="text-[11px] font-bold tracking-[0.1em] text-foreground group-hover:text-primary uppercase mb-1">{b.title}</div>
-                      {/* Show snippet of where it's linked */}
+                      <div className="text-[11px] font-bold tracking-[0.1em] text-foreground group-hover:text-primary uppercase mb-1 truncate">{b.title}</div>
                       <div className="text-[9px] text-muted-foreground tracking-[0.1em] line-clamp-2 leading-relaxed opacity-70">
                         {b.body.replace(/\n/g, ' ').substring(0, 80)}...
                       </div>
