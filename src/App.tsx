@@ -6,7 +6,6 @@ import { CalendarView } from './features/calendar/CalendarView';
 import { NotesView } from './features/notes/NotesView';
 import { HealthView } from './features/health/HealthView';
 import { FinanceView } from './features/finance/FinanceView';
-import { StatsView } from './features/stats/StatsView';
 import { ShopView } from './features/shop/ShopView';
 import { InventoryView } from './features/inventory/InventoryView';
 import { BossView } from './features/bosses/BossView';
@@ -125,7 +124,6 @@ export default function App() {
     { id: 'health', label: 'HEALTH' },
     { id: 'finance', label: 'FINANCE' },
     { id: 'skills', label: 'SKILLS' },
-    { id: 'stats', label: 'STATS' },
     { id: 'awards', label: 'AWARDS' },
     { id: 'inventory', label: 'INVENTORY' },
     { id: 'shop', label: 'SHOP' },
@@ -183,7 +181,6 @@ export default function App() {
         {view === 'health' && <HealthView toast={toast} />}
         { view === 'finance' && <FinanceView toast={toast} /> }
         { view === 'skills' && <SkillTreeView /> }
-        { view === 'stats' && <StatsView /> }
         {view === 'awards' && <AchievementsView />}
         {view === 'inventory' && <InventoryView toast={toast} />}
         {view === 'shop' && <ShopView toast={toast} />}
