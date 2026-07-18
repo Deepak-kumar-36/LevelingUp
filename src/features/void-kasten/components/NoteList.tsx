@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Plus, Hash } from 'lucide-react';
+import { Search, Plus, Hash, Network } from 'lucide-react';
 import type { Note, NoteLink } from '../../../types';
 
 interface NoteListProps {
@@ -7,9 +7,10 @@ interface NoteListProps {
   links: NoteLink[];
   onOpen: (id: string) => void;
   onCreate: () => void;
+  onOpenGraph: () => void;
 }
 
-export function NoteList({ notes, links, onOpen, onCreate }: NoteListProps) {
+export function NoteList({ notes, links, onOpen, onCreate, onOpenGraph }: NoteListProps) {
   const [search, setSearch] = useState('');
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -47,12 +48,19 @@ export function NoteList({ notes, links, onOpen, onCreate }: NoteListProps) {
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
-            placeholder="QUERY ARCHIVE..."
+            placeholder="QUERY DATA..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full bg-black/60 border border-white/20 pl-9 pr-4 py-3 text-[12px] tracking-[0.1em] text-foreground focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground/50 uppercase"
           />
         </div>
+        <button
+          onClick={onOpenGraph}
+          className="border border-white/20 text-muted-foreground px-4 py-3 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+          title="NEURAL WEB"
+        >
+          <Network size={16} />
+        </button>
         <button
           onClick={onCreate}
           className="bg-primary/10 border border-primary text-primary px-6 py-3 flex items-center justify-center gap-2 text-[11px] font-bold tracking-[0.2em] hover:bg-primary hover:text-black transition-colors uppercase shrink-0"
