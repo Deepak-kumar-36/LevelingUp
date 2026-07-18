@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useAppStore, formatDateKey, getIntensity } from '../../store/useAppStore';
 import { DEFAULT_QUESTS, MONTH_NAMES, MONTH_NAMES_SHORT, DAY_NAMES, INTENSITY_LABELS } from '../../lib/constants';
 import { buildMonthGrid } from '../../lib/utils';
+import { YearView } from './YearView';
 
 export function CalendarView() {
   const { data } = useAppStore();
   const [calDate, setCalDate] = useState(new Date());
   const [selDay, setSelDay] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'month'|'year'>('month');
 
   const myQuests = data.quests ?? DEFAULT_QUESTS;
 
@@ -19,10 +21,30 @@ export function CalendarView() {
   const VOID_COLORS = ['transparent', 'rgba(220, 38, 38, 0.2)', 'rgba(220, 38, 38, 0.5)', 'rgba(220, 38, 38, 0.9)'];
 
   return (
-    <div className="animate-in fade-in flex flex-col md:flex-row gap-12 max-w-4xl mx-auto z-10 relative pointer-events-auto">
+    <div className="animate-in fade-in flex flex-col gap-12 max-w-5xl mx-auto z-10 relative pointer-events-auto">
       
-      {/* Calendar Grid */}
-      <div className="flex-1">
+      {/* View Toggle */}
+      <div className="flex justify-center md:justify-start gap-4">
+        <button 
+          onClick={() => setViewMode('month')}
+          className={`text-[11px] tracking-[0.2em] font-bold px-4 py-2 border ${viewMode === 'month' ? 'border-primary text-primary bg-primary/10' : 'border-white/10 text-muted-foreground hover:text-white'}`}
+        >
+          MONTH VIEW
+        </button>
+        <button 
+          onClick={() => setViewMode('year')}
+          className={`text-[11px] tracking-[0.2em] font-bold px-4 py-2 border ${viewMode === 'year' ? 'border-primary text-primary bg-primary/10' : 'border-white/10 text-muted-foreground hover:text-white'}`}
+        >
+          YEAR VIEW
+        </button>
+      </div>
+
+      {viewMode === 'year' ? (
+        <YearView />
+      ) : (
+        <div className="flex flex-col md:flex-row gap-12">
+          {/* Calendar Grid */}
+          <div className="flex-1">
         <div className="flex flex-col gap-6 mb-8 items-center md:items-start">
           <div className="text-[11px] text-muted-foreground tracking-[0.3em] uppercase">
             Habit Calendar
@@ -142,6 +164,8 @@ export function CalendarView() {
           </div>
         )}
       </div>
+        </div>
+      )}
     </div>
   );
 }

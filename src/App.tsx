@@ -3,7 +3,6 @@ import { useAppStore, formatDateKey, formatWeekKey } from './store/useAppStore';
 import { DEFAULT_QUESTS, RANKS, POSSIBLE_BOUNTIES } from './lib/constants';
 import { DashboardView } from './features/dashboard/DashboardView';
 import { CalendarView } from './features/calendar/CalendarView';
-import { YearView } from './features/calendar/YearView';
 import { NotesView } from './features/notes/NotesView';
 import { HealthView } from './features/health/HealthView';
 import { FinanceView } from './features/finance/FinanceView';
@@ -122,7 +121,6 @@ export default function App() {
   const navs = [
     { id: 'dash', label: 'DASH' },
     { id: 'cal', label: 'CAL' },
-    { id: 'year', label: 'YEAR' },
     { id: 'notes', label: 'NOTES' },
     { id: 'health', label: 'HEALTH' },
     { id: 'finance', label: 'FINANCE' },
@@ -181,7 +179,6 @@ export default function App() {
         {view === 'awakening' && <AwakeningView onComplete={() => setView('dash')} />}
         {view === 'dash' && <DashboardView setView={setView} />}
         {view === 'cal' && <CalendarView />}
-        {view === 'year' && <YearView />}
         {view === 'notes' && <NotesView toast={toast} />}
         {view === 'health' && <HealthView toast={toast} />}
         { view === 'finance' && <FinanceView toast={toast} /> }
