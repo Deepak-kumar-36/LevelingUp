@@ -10,6 +10,7 @@ import { ShopView } from './features/shop/ShopView';
 import { InventoryView } from './features/inventory/InventoryView';
 import { BossView } from './features/bosses/BossView';
 import { AchievementsView } from './features/achievements/AchievementsView';
+import { WinterArcView } from './features/winter-arc/components/WinterArcView';
 import { OnboardingView } from './features/onboarding/OnboardingView';
 import { SettingsView } from './features/settings/SettingsView';
 import { AwakeningView } from './features/awakening/AwakeningView';
@@ -126,6 +127,7 @@ export default function App() {
     { id: 'skills', label: 'SKILLS' },
     { id: 'awards', label: 'AWARDS' },
     { id: 'inventory', label: 'INVENTORY' },
+    { id: 'winter-arc', label: 'WINTER ARC' },
     { id: 'shop', label: 'SHOP' },
     { id: 'bosses', label: 'BOSSES' },
     { id: 'settings', label: '⚙' }
@@ -181,6 +183,7 @@ export default function App() {
         {view === 'health' && <HealthView toast={toast} />}
         { view === 'finance' && <FinanceView toast={toast} /> }
         { view === 'skills' && <SkillTreeView /> }
+        {view === 'winter-arc' && <WinterArcView />}
         {view === 'awards' && <AchievementsView />}
         {view === 'inventory' && <InventoryView toast={toast} />}
         {view === 'shop' && <ShopView toast={toast} />}

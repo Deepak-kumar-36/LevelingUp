@@ -20,3 +20,4 @@ A Personal Life Operating System designed to help you track habits, manage goals
 1. `npm install`
 2. `npm run dev` (Runs locally)
 3. Connect your Android or iOS device to the local server or build natively via Capacitor.
+
