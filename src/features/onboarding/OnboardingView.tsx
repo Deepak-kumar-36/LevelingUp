@@ -3,51 +3,51 @@ import { useAppStore } from '../../store/useAppStore';
 import { DEFAULT_QUESTS } from '../../lib/constants';
 import type { Quest } from '../../types';
 
-const FOCUS_AREAS: { id: string; label: string; icon: string; quests: Quest[] }[] = [
+const FOCUS_AREAS: { id: string; label: string; description: string; quests: Quest[] }[] = [
   {
-    id: 'coding', label: 'CODING', icon: '⌨',
+    id: 'coding', label: 'Coding & DSA', description: 'Practice problems, dev work, contests',
     quests: [
-      { id: 'q_dsa', name: 'DSA PRACTICE', xp: 50, coins: 10, gains: { intelligence: 2, discipline: 1 } },
-      { id: 'q_dev', name: 'DEV WORK', xp: 50, coins: 10, gains: { builder: 2, discipline: 1 } },
-      { id: 'q_contest', name: 'CONTEST PROBLEM', xp: 30, coins: 5, gains: { intelligence: 1, discipline: 1 } },
+      { id: 'q_dsa', name: 'DSA Practice', xp: 50, coins: 10, gains: { intelligence: 2, discipline: 1 } },
+      { id: 'q_dev', name: 'Dev Work', xp: 50, coins: 10, gains: { builder: 2, discipline: 1 } },
+      { id: 'q_contest', name: 'Contest Problem', xp: 30, coins: 5, gains: { intelligence: 1, discipline: 1 } },
     ]
   },
   {
-    id: 'fitness', label: 'FITNESS', icon: '💪',
+    id: 'fitness', label: 'Health & Fitness', description: 'Workouts, nutrition, recovery',
     quests: [
-      { id: 'q_gym', name: 'GYM / WORKOUT', xp: 40, coins: 8, gains: { vitality: 3, discipline: 1 } },
-      { id: 'q_cal', name: 'CALORIES GOAL', xp: 20, coins: 5, gains: { vitality: 2 } },
-      { id: 'q_prot', name: 'PROTEIN GOAL', xp: 20, coins: 5, gains: { vitality: 2 } },
+      { id: 'q_gym', name: 'Workout', xp: 40, coins: 8, gains: { vitality: 3, discipline: 1 } },
+      { id: 'q_cal', name: 'Calories Goal', xp: 20, coins: 5, gains: { vitality: 2 } },
+      { id: 'q_prot', name: 'Protein Goal', xp: 20, coins: 5, gains: { vitality: 2 } },
     ]
   },
   {
-    id: 'study', label: 'STUDY', icon: '📚',
+    id: 'study', label: 'College & Study', description: 'Lectures, reading, revision',
     quests: [
-      { id: 'q_lecture', name: 'ATTEND LECTURE', xp: 30, coins: 5, gains: { intelligence: 2 } },
-      { id: 'q_read', name: 'READING (30MIN)', xp: 25, coins: 5, gains: { intelligence: 1, discipline: 1 } },
-      { id: 'q_revision', name: 'REVISION / NOTES', xp: 20, coins: 5, gains: { intelligence: 1, discipline: 1 } },
+      { id: 'q_lecture', name: 'Attend Lecture', xp: 30, coins: 5, gains: { intelligence: 2 } },
+      { id: 'q_read', name: 'Reading (30min)', xp: 25, coins: 5, gains: { intelligence: 1, discipline: 1 } },
+      { id: 'q_revision', name: 'Revision / Notes', xp: 20, coins: 5, gains: { intelligence: 1, discipline: 1 } },
     ]
   },
   {
-    id: 'finance', label: 'FINANCE', icon: '💰',
+    id: 'finance', label: 'Finance', description: 'Budget tracking, spending awareness',
     quests: [
-      { id: 'q_expense', name: 'EXPENSE ENTRY', xp: 10, coins: 2, gains: { wealth: 1, discipline: 1 } },
-      { id: 'q_save', name: 'NO UNNECESSARY SPEND', xp: 15, coins: 3, gains: { wealth: 2, discipline: 1 } },
+      { id: 'q_expense', name: 'Expense Entry', xp: 10, coins: 2, gains: { wealth: 1, discipline: 1 } },
+      { id: 'q_save', name: 'No Unnecessary Spend', xp: 15, coins: 3, gains: { wealth: 2, discipline: 1 } },
     ]
   },
   {
-    id: 'creative', label: 'CREATIVE', icon: '🎨',
+    id: 'creative', label: 'Creative Work', description: 'Projects, building, journaling',
     quests: [
-      { id: 'q_create', name: 'CREATIVE WORK (1HR)', xp: 40, coins: 8, gains: { builder: 2, intelligence: 1 } },
-      { id: 'q_journal', name: 'JOURNALING', xp: 15, coins: 3, gains: { discipline: 1 } },
+      { id: 'q_create', name: 'Creative Work (1hr)', xp: 40, coins: 8, gains: { builder: 2, intelligence: 1 } },
+      { id: 'q_journal', name: 'Journaling', xp: 15, coins: 3, gains: { discipline: 1 } },
     ]
   },
   {
-    id: 'habits', label: 'HABITS', icon: '⚡',
+    id: 'habits', label: 'Daily Habits', description: 'Routines, sleep, screen time',
     quests: [
-      { id: 'q_note', name: 'DAILY NOTE', xp: 10, coins: 2, gains: { discipline: 1 } },
-      { id: 'q_sleep', name: 'SLEEP BY 11PM', xp: 15, coins: 3, gains: { vitality: 1, discipline: 1 } },
-      { id: 'q_screen', name: 'SCREEN TIME < 2HR', xp: 20, coins: 5, gains: { discipline: 2 } },
+      { id: 'q_note', name: 'Daily Note', xp: 10, coins: 2, gains: { discipline: 1 } },
+      { id: 'q_sleep', name: 'Sleep by 11pm', xp: 15, coins: 3, gains: { vitality: 1, discipline: 1 } },
+      { id: 'q_screen', name: 'Screen Time < 2hr', xp: 20, coins: 5, gains: { discipline: 2 } },
     ]
   }
 ];
@@ -66,168 +66,136 @@ export function OnboardingView() {
     const chosenQuests = FOCUS_AREAS
       .filter(a => selected.includes(a.id))
       .flatMap(a => a.quests);
-
     const finalQuests = chosenQuests.length > 0 ? chosenQuests : DEFAULT_QUESTS;
-
     setData(d => ({
       ...d,
       setupDone: true,
-      user: { ...d.user, name: (name || 'HUNTER').toUpperCase() },
+      user: { ...d.user, name: name.trim() || 'User' },
       quests: finalQuests
     }));
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 z-10 relative bg-[#030303]">
-      <div className="absolute inset-0 z-0 pointer-events-none void-gradient" />
+    <div className="flex items-center justify-center min-h-screen p-6 bg-background">
+      <div className="w-full max-w-md">
 
-      {/* Progress Indicator */}
-      <div className="z-10 text-[10px] text-muted-foreground tracking-[0.3em] uppercase mb-16 absolute top-12">
-        [ INITIATION : STEP {step + 1}/3 ]
-      </div>
+        {/* Step indicator */}
+        <div className="flex items-center gap-2 mb-10 justify-center">
+          {[0, 1, 2].map(i => (
+            <div key={i} className={`h-1.5 rounded-full transition-all ${i <= step ? 'w-8 bg-primary' : 'w-4 bg-border'}`} />
+          ))}
+        </div>
 
-      {/* Step 0: Name */}
-      {step === 0 && (
-        <div className="max-w-md w-full text-center fade-in z-10">
-          <h1 className="text-[24px] font-bold tracking-[0.2em] mb-2 uppercase text-glow text-primary">LEVELING UP</h1>
-          <p className="text-[11px] text-muted-foreground tracking-[0.2em] mb-16 uppercase opacity-70">
-            System Initialization
-          </p>
+        {/* Step 0: Name */}
+        {step === 0 && (
+          <div className="fade-in text-center">
+            <h1 className="text-2xl font-semibold text-foreground mb-2">Welcome to Leveling Up</h1>
+            <p className="text-[14px] text-foreground-muted mb-10">Your personal productivity system.</p>
 
-          <div className="text-left flex flex-col items-center">
-            <div className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] mb-8">
-              Designate Identity
+            <div className="text-left mb-8">
+              <label className="text-[12px] text-foreground-muted mb-2 block">What should we call you?</label>
+              <input
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Your name"
+                className="w-full px-4 py-3 border border-border rounded-lg text-[15px] text-foreground bg-card focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                autoFocus
+              />
             </div>
-            
-            <input
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="ENTER DESIGNATION..."
-              className="w-64 bg-transparent border-b border-white/20 p-2 mb-12 font-mono text-[14px] outline-none text-foreground tracking-[0.2em] uppercase text-center focus:border-primary transition-colors placeholder:text-muted-foreground/30"
-              autoFocus
-            />
-            
+
             <button
               onClick={() => setStep(1)}
               disabled={!name.trim()}
-              className={`text-[12px] font-bold tracking-[0.3em] uppercase transition-colors ${
+              className={`w-full py-3 rounded-lg text-[14px] font-medium transition-all ${
                 name.trim()
-                  ? 'text-primary hover:text-white'
-                  : 'text-muted-foreground/30 cursor-not-allowed'
+                  ? 'bg-primary text-primary-foreground hover:opacity-90'
+                  : 'bg-surface text-foreground-muted cursor-not-allowed'
               }`}
             >
-              [ PROCEED ]
+              Continue
             </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Step 1: Focus Areas */}
-      {step === 1 && (
-        <div className="max-w-lg w-full text-center fade-in z-10">
-          <h2 className="text-[16px] font-bold tracking-[0.2em] mb-2 uppercase text-foreground">SELECT PROTOCOLS</h2>
-          <p className="text-[10px] text-muted-foreground tracking-[0.2em] mb-12 uppercase opacity-70">
-            Identify focal areas for optimization
-          </p>
+        {/* Step 1: Focus Areas */}
+        {step === 1 && (
+          <div className="fade-in">
+            <h2 className="text-xl font-semibold text-foreground mb-2 text-center">What do you want to track?</h2>
+            <p className="text-[14px] text-foreground-muted mb-8 text-center">Select the areas relevant to you.</p>
 
-          <div className="flex flex-col gap-6 mb-16 max-h-[40vh] overflow-y-auto no-scrollbar">
-            {FOCUS_AREAS.map(area => {
-              const active = selected.includes(area.id);
-              return (
-                <button
-                  key={area.id}
-                  onClick={() => toggleArea(area.id)}
-                  className={`text-left flex items-center justify-between border-b border-white/5 pb-4 transition-all duration-300 ${
-                    active ? 'opacity-100' : 'opacity-40 hover:opacity-70'
-                  }`}
-                >
-                  <div className="flex items-center gap-6">
-                    <span className="text-[18px] opacity-50">{area.icon}</span>
-                    <div className="flex flex-col">
-                      <span className={`text-[13px] font-bold tracking-[0.2em] uppercase ${active ? 'text-primary text-glow' : 'text-foreground'}`}>
-                        {area.label}
-                      </span>
-                      <span className="text-[9px] text-muted-foreground tracking-[0.1em] mt-1">
-                        {area.quests.length} SUB-ROUTINES
-                      </span>
+            <div className="flex flex-col gap-2 mb-8 max-h-[50vh] overflow-y-auto">
+              {FOCUS_AREAS.map(area => {
+                const active = selected.includes(area.id);
+                return (
+                  <button
+                    key={area.id}
+                    onClick={() => toggleArea(area.id)}
+                    className={`text-left p-4 rounded-lg border transition-all ${
+                      active
+                        ? 'border-primary bg-primary-muted'
+                        : 'border-border bg-card hover:border-foreground-muted'
+                    }`}
+                  >
+                    <div className={`text-[14px] font-medium ${active ? 'text-primary' : 'text-foreground'}`}>
+                      {area.label}
                     </div>
+                    <div className="text-[12px] text-foreground-muted mt-0.5">{area.description}</div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex gap-3">
+              <button onClick={() => setStep(0)} className="flex-1 py-3 border border-border rounded-lg text-[14px] text-foreground-secondary hover:bg-surface transition-colors">
+                Back
+              </button>
+              <button
+                onClick={() => setStep(2)}
+                disabled={selected.length === 0}
+                className={`flex-1 py-3 rounded-lg text-[14px] font-medium transition-all ${
+                  selected.length > 0 ? 'bg-primary text-primary-foreground hover:opacity-90' : 'bg-surface text-foreground-muted cursor-not-allowed'
+                }`}
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Summary */}
+        {step === 2 && (
+          <div className="fade-in">
+            <h2 className="text-xl font-semibold text-foreground mb-2 text-center">Ready to go, {name}.</h2>
+            <p className="text-[14px] text-foreground-muted mb-8 text-center">
+              Here's what you'll be tracking daily.
+            </p>
+
+            <div className="bg-card border border-border rounded-lg p-4 mb-8">
+              <div className="text-[12px] font-semibold text-foreground-muted uppercase tracking-wider mb-3">Daily tasks</div>
+              <div className="flex flex-col gap-2">
+                {FOCUS_AREAS.filter(a => selected.includes(a.id)).flatMap(a => a.quests).map(q => (
+                  <div key={q.id} className="flex items-center gap-3 text-[14px] text-foreground py-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    {q.name}
                   </div>
-                  {active && <span className="text-[10px] text-primary tracking-[0.2em]">[ SELECTED ]</span>}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="flex justify-between items-center px-4">
-            <button
-              onClick={() => setStep(0)}
-              className="text-[10px] tracking-[0.2em] text-muted-foreground hover:text-white uppercase transition-colors"
-            >
-              [ BACK ]
-            </button>
-            <button
-              onClick={() => setStep(2)}
-              disabled={selected.length === 0}
-              className={`text-[12px] font-bold tracking-[0.3em] uppercase transition-colors ${
-                selected.length > 0
-                  ? 'text-primary hover:text-white'
-                  : 'text-muted-foreground/30 cursor-not-allowed'
-              }`}
-            >
-              [ PROCEED ]
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 2: Summary & Begin */}
-      {step === 2 && (
-        <div className="max-w-lg w-full text-center fade-in z-10">
-          <h2 className="text-[16px] font-bold tracking-[0.2em] mb-2 uppercase text-primary text-glow">OVERVIEW: {name.toUpperCase()}</h2>
-          <p className="text-[10px] text-muted-foreground tracking-[0.2em] mb-12 uppercase opacity-70">
-            System ready for deployment
-          </p>
-
-          <div className="text-left mb-12">
-            <div className="text-[10px] font-bold tracking-[0.2em] mb-4 text-muted-foreground uppercase border-b border-white/10 pb-2">
-              &gt; ACTIVE PROTOCOLS
+                ))}
+              </div>
             </div>
-            <div className="flex flex-col gap-3 max-h-[30vh] overflow-y-auto no-scrollbar mb-8">
-              {FOCUS_AREAS.filter(a => selected.includes(a.id)).flatMap(a => a.quests).map((q) => (
-                <div key={q.id} className="flex justify-between text-[11px] font-mono tracking-[0.1em] opacity-80">
-                  <span className="uppercase text-foreground">- {q.name}</span>
-                  <span className="text-primary font-bold">+{q.xp} XP</span>
-                </div>
-              ))}
-            </div>
-            
-            <div className="text-[10px] font-bold tracking-[0.2em] mb-4 text-muted-foreground uppercase border-b border-white/10 pb-2">
-              &gt; OPERATING PARAMETERS
-            </div>
-            <div className="space-y-3 text-[10px] tracking-[0.1em] uppercase opacity-70 font-mono">
-              <div>&gt; EXECUTE DAILY PROTOCOLS FOR XP/COINS</div>
-              <div>&gt; MAINTAIN &gt;70% SUCCESS FOR STREAK</div>
-              <div>&gt; ASCEND RANKS E -&gt; S</div>
-              <div>&gt; ENGAGE BOSSES &amp; ACQUIRE GEAR</div>
+
+            <div className="flex gap-3">
+              <button onClick={() => setStep(1)} className="flex-1 py-3 border border-border rounded-lg text-[14px] text-foreground-secondary hover:bg-surface transition-colors">
+                Back
+              </button>
+              <button
+                onClick={finish}
+                className="flex-1 py-3 bg-primary text-primary-foreground rounded-lg text-[14px] font-medium hover:opacity-90 transition-opacity"
+              >
+                Get started
+              </button>
             </div>
           </div>
-
-          <div className="flex justify-between items-center px-4">
-            <button
-              onClick={() => setStep(1)}
-              className="text-[10px] tracking-[0.2em] text-muted-foreground hover:text-white uppercase transition-colors"
-            >
-              [ BACK ]
-            </button>
-            <button
-              onClick={finish}
-              className="text-[12px] font-bold tracking-[0.3em] uppercase text-primary hover:text-white transition-colors"
-            >
-              [ INITIALIZE SYSTEM ]
-            </button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

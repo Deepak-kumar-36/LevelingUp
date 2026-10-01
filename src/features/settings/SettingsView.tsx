@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { INITIAL_STATE, THEMES } from '../../lib/constants';
-import { vibrateSuccess, vibrateError, vibrateLight } from '../../lib/haptics';
+import { INITIAL_STATE } from '../../lib/constants';
 import type { AppState } from '../../types';
+import { Download, Upload, AlertTriangle, Info } from 'lucide-react';
 
 export function SettingsView({ toast }: { toast: (msg: string) => void }) {
   const { data, setData } = useAppStore();
@@ -20,28 +20,27 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast('✓ ARCHIVE EXPORTED');
+      toast('Backup exported');
     } catch {
-      toast('✗ EXPORT FAILED');
+      toast('Export failed');
     }
   };
 
   const importData = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
         const imported = JSON.parse(ev.target?.result as string) as AppState;
         if (!imported.user || !imported.setupDone) {
-          toast('✗ INVALID ARCHIVE FILE');
+          toast('Invalid backup file');
           return;
         }
         setData(() => ({ ...INITIAL_STATE, ...imported }));
-        toast('✓ SYSTEM RESTORED');
+        toast('Data restored');
       } catch {
-        toast('✗ FAILED TO READ ARCHIVE');
+        toast('Failed to read backup');
       }
     };
     reader.readAsText(file);
@@ -51,169 +50,99 @@ export function SettingsView({ toast }: { toast: (msg: string) => void }) {
   const resetAll = () => {
     setData(() => INITIAL_STATE);
     setShowReset(false);
-    toast('✓ SYSTEM PURGED');
+    toast('All data cleared');
   };
 
   const totalDays = Object.keys(data.dayData || {}).length;
-  const totalQuestsCompleted = Object.values(data.dayData || {}).reduce((sum, d) => sum + (d.quests?.length || 0), 0);
-  const bossesDefeated = (data.bosses || []).reduce((sum, b) => {
-    const totalDamageDealt = b.maxHp - b.hp;
-    return sum + Math.floor(totalDamageDealt / b.maxHp);
-  }, 0);
-
-  const purchaseTheme = (themeId: string, cost: number) => {
-    setData(d => {
-      if (d.user.coins < cost) {
-        vibrateError();
-        toast('✗ INSUFFICIENT COINS');
-        return d;
-      }
-      vibrateSuccess();
-      toast('✓ THEME UNLOCKED');
-      return {
-        ...d,
-        user: { ...d.user, coins: d.user.coins - cost },
-        unlockedThemes: [...(d.unlockedThemes || []), themeId],
-        theme: themeId
-      };
-    });
-  };
-
-  const selectTheme = (themeId: string) => {
-    vibrateLight();
-    setData(d => ({ ...d, theme: themeId }));
-  };
+  const totalCompleted = Object.values(data.dayData || {}).reduce((sum, d) => sum + (d.quests?.length || 0), 0);
 
   return (
-    <div className="animate-in fade-in flex flex-col gap-16 max-w-4xl mx-auto z-10 relative pointer-events-auto h-full px-4 pt-10 pb-24 overflow-y-auto no-scrollbar">
-      
-      {/* Profile Metrics */}
+    <div className="flex flex-col gap-10 fade-in max-w-xl">
+
       <div>
-        <div className="text-[11px] text-muted-foreground tracking-[0.3em] uppercase mb-8">
-          System Identity
-        </div>
-        <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-semibold text-foreground tracking-tight">Settings</h1>
+        <p className="text-[14px] text-foreground-muted mt-1">Account and data management</p>
+      </div>
+
+      {/* Profile */}
+      <section>
+        <h2 className="text-[12px] font-semibold text-foreground-muted uppercase tracking-wider mb-4">Profile</h2>
+        <div className="bg-card border border-border rounded-lg divide-y divide-border">
           {[
-            ['DESIGNATION', data.user?.name || 'UNKNOWN'],
-            ['TOTAL XP', (data.user?.totalXp || 0).toLocaleString()],
-            ['UPTIME (DAYS)', totalDays],
-            ['PROTOCOLS EXECUTED', totalQuestsCompleted],
-            ['MAXIMUM STREAK', data.user?.longestStreak || 0],
-            ['THREATS ELIMINATED', bossesDefeated]
+            ['Name', data.user?.name || 'Unknown'],
+            ['Days active', totalDays],
+            ['Tasks completed', totalCompleted],
           ].map(([label, value]) => (
-            <div key={label as string} className="flex justify-between items-center border-b border-white/5 pb-2">
-              <span className="text-[11px] tracking-[0.2em] text-muted-foreground uppercase">{label}</span>
-              <span className="text-[12px] font-bold font-mono tracking-[0.1em] text-primary">{value as React.ReactNode}</span>
+            <div key={label as string} className="flex items-center justify-between px-4 py-3">
+              <span className="text-[14px] text-foreground">{label}</span>
+              <span className="text-[14px] text-foreground-secondary font-medium tabular-nums">{value as React.ReactNode}</span>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Terminal Theme */}
-      <div>
-        <div className="text-[11px] text-muted-foreground tracking-[0.3em] uppercase mb-8">
-          Visual Interface
-        </div>
-        <div className="flex flex-col gap-6">
-          {THEMES.map(t => {
-            const unlocked = (data.unlockedThemes || []).includes(t.id);
-            const active = data.theme === t.id;
-            const canAfford = data.user.coins >= t.cost;
-            return (
-              <div key={t.id} className="flex justify-between items-center border-b border-white/5 pb-2 transition-opacity hover:opacity-100 opacity-80">
-                <span className={`text-[12px] tracking-[0.2em] uppercase ${active ? 'text-primary font-bold' : 'text-foreground'}`}>
-                  {t.name}
-                </span>
-                {unlocked ? (
-                  <button
-                    onClick={() => selectTheme(t.id)}
-                    disabled={active}
-                    className={`text-[10px] tracking-[0.2em] uppercase font-bold transition-colors ${
-                      active ? 'text-primary cursor-default' : 'text-muted-foreground hover:text-white'
-                    }`}
-                  >
-                    {active ? '[ ACTIVE ]' : '[ SELECT ]'}
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => purchaseTheme(t.id, t.cost)}
-                    disabled={!canAfford}
-                    className={`text-[10px] tracking-[0.2em] uppercase font-bold transition-colors ${
-                      canAfford ? 'text-primary hover:text-white' : 'text-muted-foreground/30 cursor-not-allowed'
-                    }`}
-                  >
-                    [ ACQUIRE: {t.cost} C ]
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Data Management */}
-      <div>
-        <div className="text-[11px] text-muted-foreground tracking-[0.3em] uppercase mb-8">
-          Data Preservation
-        </div>
-        <div className="flex flex-col gap-6">
+      {/* Data */}
+      <section>
+        <h2 className="text-[12px] font-semibold text-foreground-muted uppercase tracking-wider mb-4">Data</h2>
+        <div className="bg-card border border-border rounded-lg divide-y divide-border">
           <button
             onClick={exportData}
-            className="text-left text-[12px] font-bold tracking-[0.2em] uppercase text-foreground hover:text-primary transition-colors"
+            className="flex items-center gap-3 px-4 py-3 text-[14px] text-foreground hover:bg-surface-hover transition-colors w-full text-left"
           >
-            [ EXPORT ARCHIVE ]
+            <Download size={16} className="text-foreground-muted" />
+            Export backup
           </button>
-          
           <button
             onClick={() => fileInput.current?.click()}
-            className="text-left text-[12px] font-bold tracking-[0.2em] uppercase text-foreground hover:text-primary transition-colors"
+            className="flex items-center gap-3 px-4 py-3 text-[14px] text-foreground hover:bg-surface-hover transition-colors w-full text-left"
           >
-            [ RESTORE ARCHIVE ]
+            <Upload size={16} className="text-foreground-muted" />
+            Import backup
           </button>
-          <input
-            ref={fileInput}
-            type="file"
-            accept=".json"
-            onChange={importData}
-            className="hidden"
-          />
+          <input ref={fileInput} type="file" accept=".json" onChange={importData} className="hidden" />
         </div>
-      </div>
+      </section>
 
       {/* Danger Zone */}
-      <div className="pt-10">
-        <div className="text-[11px] text-destructive tracking-[0.3em] uppercase mb-8">
-          Critical Operations
+      <section>
+        <h2 className="text-[12px] font-semibold text-error uppercase tracking-wider mb-4">Danger zone</h2>
+        <div className="bg-card border border-error/20 rounded-lg">
+          {!showReset ? (
+            <button
+              onClick={() => setShowReset(true)}
+              className="flex items-center gap-3 px-4 py-3 text-[14px] text-error hover:bg-error-muted transition-colors w-full text-left"
+            >
+              <AlertTriangle size={16} />
+              Reset all data
+            </button>
+          ) : (
+            <div className="px-4 py-4 flex flex-col gap-3">
+              <p className="text-[13px] text-foreground-secondary">This will permanently delete all your data. This cannot be undone.</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowReset(false)}
+                  className="flex-1 py-2 border border-border rounded-lg text-[13px] text-foreground-secondary hover:bg-surface transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={resetAll}
+                  className="flex-1 py-2 bg-error text-white rounded-lg text-[13px] font-medium hover:opacity-90 transition-opacity"
+                >
+                  Delete everything
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-        {!showReset ? (
-          <button
-            onClick={() => setShowReset(true)}
-            className="text-left text-[12px] font-bold tracking-[0.2em] uppercase text-destructive hover:text-white transition-colors"
-          >
-            [ PURGE SYSTEM DATA ]
-          </button>
-        ) : (
-          <div className="flex gap-8">
-            <button
-              onClick={() => setShowReset(false)}
-              className="text-[12px] font-bold tracking-[0.2em] uppercase text-muted-foreground hover:text-white transition-colors"
-            >
-              [ ABORT ]
-            </button>
-            <button
-              onClick={resetAll}
-              className="text-[12px] font-bold tracking-[0.2em] uppercase text-destructive text-glow hover:text-white transition-colors"
-            >
-              [ CONFIRM PURGE ]
-            </button>
-          </div>
-        )}
-      </div>
+      </section>
 
-      {/* Info */}
-      <div className="mt-10 border-t border-white/5 pt-8 text-center text-[9px] text-muted-foreground/50 tracking-[0.3em] font-mono">
-        LEVELING UP v1.0<br/>
-        LOCAL STORAGE ARCHITECTURE
+      {/* Footer */}
+      <div className="text-center text-[12px] text-foreground-muted pt-4 border-t border-border">
+        <div className="flex items-center justify-center gap-2">
+          <Info size={12} />
+          Leveling Up · All data stored locally
+        </div>
       </div>
     </div>
   );

@@ -1,38 +1,59 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #030303;
-  --color-background-alt: #0a0a0a;
-  --color-foreground: #e2e8f0;
-  
-  --color-card: transparent;
-  --color-card-foreground: #e2e8f0;
-  
-  --color-popover: #050505;
-  --color-popover-foreground: #e2e8f0;
-  
-  --color-primary: #dc2626; /* Dark intense red */
-  --color-primary-foreground: #ffffff;
-  
-  --color-secondary: #171717;
-  --color-secondary-foreground: #e2e8f0;
-  
-  --color-muted: #171717;
-  --color-muted-foreground: #525252;
-  
-  --color-accent: #262626;
-  --color-accent-foreground: #dc2626;
-  
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #ffffff;
-  
-  --color-success: #10b981;
-  --color-success-alt: #059669;
-  
-  --color-border: transparent; /* No borders in the void */
-  --color-input: transparent;
-  --color-ring: #dc2626;
-  --radius: 0; /* Brutalism */
+  /* Background & Surface */
+  --color-background: #FAFAF9;
+  --color-background-alt: #FFFFFF;
+  --color-surface: #F5F5F4;
+  --color-surface-hover: #EEEEEC;
+
+  /* Text */
+  --color-foreground: #171717;
+  --color-foreground-secondary: #525252;
+  --color-foreground-muted: #A3A3A3;
+
+  /* Card */
+  --color-card: #FFFFFF;
+  --color-card-foreground: #171717;
+
+  /* Popover */
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #171717;
+
+  /* Accent — restrained indigo */
+  --color-primary: #4F46E5;
+  --color-primary-foreground: #FFFFFF;
+  --color-primary-muted: #EEF2FF;
+
+  /* Secondary */
+  --color-secondary: #F5F5F4;
+  --color-secondary-foreground: #171717;
+
+  /* Muted */
+  --color-muted: #F5F5F4;
+  --color-muted-foreground: #737373;
+
+  /* Accent */
+  --color-accent: #F5F5F4;
+  --color-accent-foreground: #4F46E5;
+
+  /* Status */
+  --color-success: #16A34A;
+  --color-success-muted: #F0FDF4;
+  --color-warning: #CA8A04;
+  --color-warning-muted: #FEFCE8;
+  --color-error: #DC2626;
+  --color-error-muted: #FEF2F2;
+  --color-destructive: #DC2626;
+  --color-destructive-foreground: #FFFFFF;
+
+  /* Border */
+  --color-border: #E5E5E5;
+  --color-input: #E5E5E5;
+  --color-ring: #4F46E5;
+
+  /* Radius */
+  --radius: 8px;
 }
 
 @layer base {
@@ -44,150 +65,67 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 14px;
+    line-height: 1.6;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
   }
 
   button {
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
     cursor: pointer;
   }
 
-  input,
-  textarea,
-  select {
-    font-family: 'Inter', sans-serif;
+  input, textarea, select {
+    font-family: inherit;
     outline: none;
-    -webkit-user-select: auto;
-    user-select: auto;
   }
 
   textarea {
     resize: vertical;
   }
 
+  /* Scrollbar — subtle */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-
   ::-webkit-scrollbar-track {
-    background: var(--color-background-alt);
+    background: transparent;
   }
-
   ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
     background: var(--color-muted-foreground);
-    border-radius: 4px;
   }
 }
 
+/* Utilities */
 .fade-in {
-  animation: fadeIn 0.15s ease-in-out;
+  animation: fadeIn 0.15s ease-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Themes */
-.theme-default {
-  /* Inherits from @theme (Light Mode) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.theme-dark {
-  --color-background: #0f172a;
-  --color-background-alt: #1e293b;
-  --color-foreground: #f8fafc;
-  --color-card: #1e293b;
-  --color-card-foreground: #f8fafc;
-  --color-popover: #1e293b;
-  --color-popover-foreground: #f8fafc;
-  --color-primary: #3b82f6;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #334155;
-  --color-secondary-foreground: #f8fafc;
-  --color-muted: #334155;
-  --color-muted-foreground: #94a3b8;
-  --color-accent: #1e293b;
-  --color-accent-foreground: #3b82f6;
-  --color-border: #334155;
-  --color-success: #10b981;
-  --color-success-alt: #34d399;
-  --color-destructive: #ef4444;
-}
-
-.theme-sakura {
-  --color-background: #fff5f8;
-  --color-background-alt: #ffe4e6;
-  --color-foreground: #881337;
-  --color-card: #ffffff;
-  --color-card-foreground: #881337;
-  --color-popover: #ffffff;
-  --color-popover-foreground: #881337;
-  --color-primary: #be123c;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #ffe4e6;
-  --color-secondary-foreground: #be123c;
-  --color-muted: #ffe4e6;
-  --color-muted-foreground: #fb7185;
-  --color-accent: #fecdd3;
-  --color-accent-foreground: #be123c;
-  --color-border: #fecdd3;
-  --color-success: #10b981;
-  --color-success-alt: #34d399;
-  --color-destructive: #e11d48;
-}
-
-.theme-ocean {
-  --color-background: #f0fdf4;
-  --color-background-alt: #dcfce7;
-  --color-foreground: #064e3b;
-  --color-card: #ffffff;
-  --color-card-foreground: #064e3b;
-  --color-popover: #ffffff;
-  --color-popover-foreground: #064e3b;
-  --color-primary: #059669;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #d1fae5;
-  --color-secondary-foreground: #059669;
-  --color-muted: #d1fae5;
-  --color-muted-foreground: #34d399;
-  --color-accent: #a7f3d0;
-  --color-accent-foreground: #059669;
-  --color-border: #a7f3d0;
-  --color-success: #10b981;
-  --color-success-alt: #34d399;
-  --color-destructive: #ef4444;
-}
-
-/* The Corrupted Void Base */
-.void-gradient {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center 120%, rgba(41, 8, 8, 0.8) 0%, rgba(3, 3, 3, 1) 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Remove all card shadows and backgrounds */
-.card-shadow,
-.theme-dark .card-shadow {
-  box-shadow: none !important;
-  background-color: transparent !important;
-  border: none !important;
-}
-
-/* Typography Hierarchy Utilities */
-.text-glow {
-  text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
-}
-
-.font-mono {
-  font-family: 'JetBrains Mono', monospace;
+/* Focus ring */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius);
 }

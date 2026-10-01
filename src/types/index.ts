@@ -214,6 +214,29 @@ export interface NoteLink {
 }
 
 // ---------------------------------------------------------------------------
+// Projects & Ideas
+// ---------------------------------------------------------------------------
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  status: 'Not Started' | 'Planning' | 'In Progress' | 'Paused' | 'Completed' | 'Archived';
+  priority: 'Low' | 'Medium' | 'High';
+  category: string;
+  createdAt: number;
+}
+
+export interface Idea {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: 'Inbox' | 'Exploring' | 'Maybe Later' | 'Promoted' | 'Archived';
+  createdAt: number;
+}
+
+// ---------------------------------------------------------------------------
 // Themes
 // ---------------------------------------------------------------------------
 
@@ -262,4 +285,6 @@ export interface AppState {
   completedBounties: string[];
   lastBountyRefresh: string | null;
   materials: Record<string, number>;
+  projects?: Project[];
+  ideas?: Idea[];
 }
